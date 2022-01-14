@@ -122,6 +122,7 @@ char *insert_newline(const char *message)
     {
         ret[i + 1] = message[i];
     }
+    std::cout << ret << std::endl;
     return ret;
 }
 
