@@ -88,28 +88,21 @@ char *SerialConnection::encode(char *data, char *ret)
     {
         message_data[i] = data[i];
     }
-    message_data[this->msg_length_decoded - 4] = 'A';
-    message_data[this->msg_length_decoded - 3] = 'A';
-    message_data[this->msg_length_decoded - 2] = 'A';
-    message_data[this->msg_length_decoded - 1] = 'A';
-    /*
+    
     message_data[this->msg_length_decoded - 4] = ((uint32_t)checksum >> 0) & 0xFF;
     message_data[this->msg_length_decoded - 3] = ((uint32_t)checksum >> 8) & 0xFF;
     message_data[this->msg_length_decoded - 2] = ((uint32_t)checksum >> 16) & 0xFF;
     message_data[this->msg_length_decoded - 1] = ((uint32_t)checksum >> 24) & 0xFF;
-    */
+    
     /*
     char *enc_input = "12345678AAAA";
     char *encoded_msg;
     Base64.encode(encoded_msg, enc_input, this->msg_length_decoded);
     */
 
-    char inputString[] = "12345678AAAA";
-    int inputStringLength = strlen(inputString);
-
-    int encodedLength = Base64.encodedLength(inputStringLength);
+    int encodedLength = Base64.encodedLength(this->msg_length_decoded);
     char encodedString[encodedLength];
-    Base64.encode(encodedString, inputString, inputStringLength);
+    Base64.encode(encodedString, message_data, this->msg_length_decoded);
 
     String strmsg = encodedString;
     strmsg += '&';

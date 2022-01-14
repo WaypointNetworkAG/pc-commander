@@ -155,6 +155,8 @@ char *ArduinoSerial::decode(char *data)
 
     std::copy(ret.begin(), ret.end(),dec_string);
 
+    std::cout << dec_string << std::endl;
+
     return dec_string;
 }
 
@@ -256,7 +258,7 @@ void ArduinoSerial::update()
 
     std::cout << "Serial response!" << std::endl;
 
-    char in_bytes[this->msg_length_encoded];
+    char* in_bytes;
 
     serial->readString(in_bytes, this->msg_start, 17);
 
