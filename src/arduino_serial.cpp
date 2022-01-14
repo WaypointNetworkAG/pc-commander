@@ -140,7 +140,11 @@ char *ArduinoSerial::encode(char *data) const
     std::string result;
     result = base64::encode(message_data, this->msg_length_decoded);
 
-    return __insert_initial_char(const_cast<char *>(result.c_str()));
+    char* ret = __insert_initial_char(const_cast<char *>(result.c_str()));
+
+    std::cout << ret << std::endl;
+
+    return ret;
 }
 
 char *ArduinoSerial::decode(char *data)
