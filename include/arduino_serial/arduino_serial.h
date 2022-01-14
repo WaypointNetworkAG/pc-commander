@@ -38,7 +38,6 @@
 #include "serialib.h"
 #include <windows.h>
 #include <vector>
-#include "serial/serial.h"
 #include <base64_rfc4648.hpp>
 #include <CRC.h>
 
