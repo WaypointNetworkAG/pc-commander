@@ -155,7 +155,7 @@ char *ArduinoSerial::decode(char *data)
 
     std::copy(ret.begin(), ret.end(),dec_string);
 
-    std::cout << dec_string << std::endl;
+    std::cout << "Test" << std::endl;
 
     return dec_string;
 }
