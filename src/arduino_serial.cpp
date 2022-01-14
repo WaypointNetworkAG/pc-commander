@@ -305,13 +305,14 @@ void ArduinoSerial::update()
 
     std::cout << dec_msg << std::endl;
 
-    /*
     if (!verify_checksum(dec_msg))
     {
-        if (connected) { send_error_response(); }
+        if (connected) { /*send_error_response();*/ }
         return;
     }
-    */
+
+    std::cout << "Checksum successful" << std::endl;
+
     /*
     char message[this->msg_length_decoded - 4];
     for (int i = 0; i < this->msg_length_decoded - 4; i++)
