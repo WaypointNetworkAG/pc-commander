@@ -290,32 +290,29 @@ void ArduinoSerial::update()
     in_bytes[strlen(in_bytes) - 1] = '\0';
 
     std::cout << in_bytes << std::endl;
-
+    /*
     std::string test(in_bytes, 16);
 
-    std::cout << test << std::endl;
-
     std::string ret = base64_decode(test);
-
-    std::cout << ret << std::endl;
-
+    */
     //std::vector<std::uint8_t> ret = base64::decode(in_bytes, strlen(in_bytes));
 
     //char* dec_string = new char[this->msg_length_decoded];
 
     //std::copy(ret.begin(), ret.end(),dec_string);
 
-    std::cout << "Test" << std::endl;
-
-    /*
     char* dec_msg = decode(in_bytes);
 
+    std::cout << dec_msg << std::endl;
+
+    /*
     if (!verify_checksum(dec_msg))
     {
         if (connected) { send_error_response(); }
         return;
     }
-
+    */
+    /*
     char message[this->msg_length_decoded - 4];
     for (int i = 0; i < this->msg_length_decoded - 4; i++)
     {
