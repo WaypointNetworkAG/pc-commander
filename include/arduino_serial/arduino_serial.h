@@ -41,6 +41,7 @@ class ArduinoSerial
 {
 public:
     ArduinoSerial();
+    void shutdown();
 };
 
 #endif //TEST_ARDUINO_SERIAL_H_
