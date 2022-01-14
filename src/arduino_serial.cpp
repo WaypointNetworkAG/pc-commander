@@ -256,7 +256,7 @@ void ArduinoSerial::update()
 
     char in_bytes[this->msg_length_encoded];
 
-    serial->readBytes(in_bytes, 17);
+    serial->readString(in_bytes, this->msg_start, 17);
 
     /*
 

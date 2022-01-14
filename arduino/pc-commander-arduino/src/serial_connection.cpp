@@ -88,11 +88,16 @@ char *SerialConnection::encode(char *data)
     {
         message_data[i] = data[i];
     }
+    message_data[this->msg_length_decoded - 4] = 'A';
+    message_data[this->msg_length_decoded - 3] = 'A';
+    message_data[this->msg_length_decoded - 2] = 'A';
+    message_data[this->msg_length_decoded - 1] = 'A';
+    /*
     message_data[this->msg_length_decoded - 4] = ((uint32_t)checksum >> 0) & 0xFF;
     message_data[this->msg_length_decoded - 3] = ((uint32_t)checksum >> 8) & 0xFF;
     message_data[this->msg_length_decoded - 2] = ((uint32_t)checksum >> 16) & 0xFF;
     message_data[this->msg_length_decoded - 1] = ((uint32_t)checksum >> 24) & 0xFF;
-
+    */
     char encoded_msg[this->msg_length_encoded + 1];
     Base64.encode(encoded_msg, message_data, this->msg_length_decoded);
 
