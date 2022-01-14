@@ -42,6 +42,7 @@ target_include_directories(
 target_link_libraries(
         arduino_serial
         serial
+        base64
 )
 
 add_executable(main
