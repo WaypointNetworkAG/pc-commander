@@ -256,7 +256,7 @@ void ArduinoSerial::update()
 
     char in_bytes[this->msg_length_encoded];
 
-    serial->readBytes(in_bytes, this->msg_start, 17);
+    serial->readString(in_bytes, this->msg_start, 17);
 
     /*
 
@@ -283,12 +283,12 @@ void ArduinoSerial::update()
      */
 
     std::cout << in_bytes << std::endl;
-    /*
+
     char* dec_msg = decode(in_bytes);
 
     if (!verify_checksum(dec_msg))
     {
-        if (connected) { send_error_response(); }
+        if (connected) { /*send_error_response();*/ }
         return;
     }
 
@@ -302,5 +302,4 @@ void ArduinoSerial::update()
     {
         this->connected = true;
     }
-    */
 }

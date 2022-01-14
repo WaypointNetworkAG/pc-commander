@@ -101,9 +101,9 @@ char *SerialConnection::encode(char *data)
     char encoded_msg[this->msg_length_encoded + 1];
     Base64.encode(encoded_msg, message_data, this->msg_length_decoded);
 
-    encoded_msg[this->msg_length_encoded] = 38;
+    //encoded_msg[this->msg_length_encoded] = 38;
 
-    return "AAAAAAAAAAAAAAAA" /*__insert_initial_char(encoded_msg)*/;
+    return encoded_msg /*__insert_initial_char(encoded_msg)*/;
 }
 
 bool SerialConnection::verify_checksum(char* msg)
