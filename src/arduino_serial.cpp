@@ -291,7 +291,7 @@ void ArduinoSerial::update()
 
     std::cout << in_bytes << std::endl;
 
-    std::string test(in_bytes, 16);
+    std::string test(in_bytes, 10);
 
     std::cout << test << std::endl;
 
