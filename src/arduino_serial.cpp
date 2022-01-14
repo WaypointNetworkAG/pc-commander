@@ -36,13 +36,14 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <iostream>
 
 #include <windows.h>
 
 #pragma comment(lib, "user32.lib")
 #pragma comment(lib, "advapi32.lib")
 
-#define SERIAL_PORT "/dev/tty.usbmodem1201"
+#define SERIAL_PORT "COM9"
 
 ArduinoSerial::ArduinoSerial()
 {
@@ -52,18 +53,20 @@ ArduinoSerial::ArduinoSerial()
     if (errorOpening!=1)
         std::cout << "Error Opening" << std::endl;
     else
+    {
         printf ("Successful connection to %s\n",SERIAL_PORT);
 
-    char* buf = new char[100];
+        char* buf = new char[100];
 
-    while(true)
-    {
-        serial.readString(buf, '\n', 100);
-        std::cout << buf << std::endl;
-        if (strcmp(buf, "return\n") == 0)
+        while(true)
         {
-            shutdown();
-            break;
+            serial.readString(buf, '\n', 100);
+            std::cout << buf << std::endl;
+            if (strcmp(buf, "return\n") == 0)
+            {
+                shutdown();
+                break;
+            }
         }
     }
 }
