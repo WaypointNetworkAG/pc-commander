@@ -38,8 +38,6 @@
 #include <stdlib.h>
 #include <iostream>
 
-#include <windows.h>
-
 #pragma comment(lib, "user32.lib")
 #pragma comment(lib, "advapi32.lib")
 
@@ -49,6 +47,8 @@ ArduinoSerial::ArduinoSerial()
 {
     serialib serial;
 
+    get_available_COM_ports();
+    /*
     char errorOpening = serial.openDevice(SERIAL_PORT, 115200);
     if (errorOpening!=1)
         std::cout << "Error Opening" << std::endl;
@@ -69,6 +69,7 @@ ArduinoSerial::ArduinoSerial()
             }
         }
     }
+     */
 }
 
 void ArduinoSerial::shutdown()
@@ -108,4 +109,34 @@ void ArduinoSerial::shutdown()
 
     //shutdown was successful
     return;
+}
+
+bool ArduinoSerial::get_available_COM_ports()
+{
+    DWORD test;
+    bool gotPort = 0; // in case the port is not found
+
+    for(int i = 0; i < 255; i++) // checking ports from COM0 to COM255
+    {
+        CString str;
+        str.Format(_T("%d"),i);
+        CString ComName = CString("COM") + CString(str); // converting to COM0, COM1, COM2
+
+        test = QueryDosDevice(ComName, (LPSTR)this->COMPaths, 5000);
+
+        // Test the return value and error if any
+        if(test != 0) //QueryDosDevice returns zero if it didn't find an object
+        {
+            std::cout << ComName << std::endl;
+            gotPort = 1; // found port
+        }
+
+        if(::GetLastError() == ERROR_INSUFFICIENT_BUFFER)
+        {
+            this->COMPaths[10000]; // in case the buffer got filled, increase size of the buffer.
+            continue;
+        }
+    }
+
+    return gotPort;
 }

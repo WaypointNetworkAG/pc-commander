@@ -1,14 +1,15 @@
 #include <Arduino.h>
+#include "serial_connection/serial_connection.h"
 
-void setup() {
-  Serial.begin(115200);
-  while (!Serial)
-  {
-    delay(1);
-  }
+SerialConnection *serial_connection;
+
+void setup()
+{
+    serial_connection = new SerialConnection();
 }
 
-void loop() {
-  delay(3000);
-  Serial.write("return\n");
+void loop()
+{
+    serial_connection->update();
+    delay(1);
 }

@@ -36,12 +36,17 @@
 #define TEST_ARDUINO_SERIAL_H_
 
 #include "serialib.h"
+#include <windows.h>
 
 class ArduinoSerial
 {
 public:
     ArduinoSerial();
     void shutdown();
+private:
+    bool get_available_COM_ports();
+
+    TCHAR COMPaths[5000];
 };
 
 #endif //TEST_ARDUINO_SERIAL_H_
