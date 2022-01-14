@@ -33,7 +33,8 @@ void SerialConnection::update()
         in_bytes[n] = Serial.read();
     }
 
-    char* dec_msg = decode(in_bytes);
+    char dec_string[this->msg_length_decoded];
+    char *dec_msg = decode(in_bytes, dec_string);
 
     if (!verify_checksum(dec_msg))
     {
@@ -58,16 +59,15 @@ void SerialConnection::update()
     }
 }
 
-char *SerialConnection::decode(char *data)
+char *SerialConnection::decode(char *data, char *ret)
 {
-    char dec_string[this->msg_length_decoded];
 
-    Base64.decode(dec_string, data, this->msg_length_encoded);
+    Base64.decode(ret, data, this->msg_length_encoded);
 
-    return dec_string;
+    return ret;
 }
-
-char *SerialConnection::__insert_initial_char(char *message) const
+/*
+char *SerialConnection::__insert_initial_char(char *message, char *ret) const
 {
     char *ret = new char[strlen(message) + 1];
     ret[0] = this->msg_start;
@@ -77,8 +77,8 @@ char *SerialConnection::__insert_initial_char(char *message) const
     }
     return ret;
 }
-
-char *SerialConnection::encode(char *data)
+*/
+char *SerialConnection::encode(char *data, char *ret)
 {
     CRC32 crc;
     uint32_t checksum = crc.calculate(data, this->msg_length_decoded - 4);
@@ -98,14 +98,26 @@ char *SerialConnection::encode(char *data)
     message_data[this->msg_length_decoded - 2] = ((uint32_t)checksum >> 16) & 0xFF;
     message_data[this->msg_length_decoded - 1] = ((uint32_t)checksum >> 24) & 0xFF;
     */
-    char encoded_msg[this->msg_length_encoded + 2];
-    Base64.encode(encoded_msg, message_data, this->msg_length_decoded);
+    /*
+    char *enc_input = "12345678AAAA";
+    char *encoded_msg;
+    Base64.encode(encoded_msg, enc_input, this->msg_length_decoded);
+    */
+
+    char inputString[] = "12345678AAAA";
+    int inputStringLength = strlen(inputString);
+
+    int encodedLength = Base64.encodedLength(inputStringLength);
+    char encodedString[encodedLength];
+    Base64.encode(encodedString, inputString, inputStringLength);
+
+    String strmsg = encodedString;
+    strmsg += '&';
+    strcpy((char *)ret, strmsg.c_str());
 
     //encoded_msg[this->msg_length_encoded] = 38;
 
-    //char testmsg[10] = "AAAAAAAAA";
-
-    return "AAAAAAAAAAAAAAAA" /*__insert_initial_char(encoded_msg)*/;
+    return ret /*__insert_initial_char(encoded_msg)*/;
 }
 
 bool SerialConnection::verify_checksum(char* msg)

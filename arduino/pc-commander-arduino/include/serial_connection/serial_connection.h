@@ -12,15 +12,15 @@ public:
     void send_button_message(char button_char);
 
 private:
-    char *decode(char *data);
-    char *encode(char *data);
+    char *decode(char *data, char *ret);
+    char *encode(char *data, char *ret);
     bool verify_checksum(char *msg);
 
     void send_success_response();
     void send_error_response();
     void send_handshake_response();
 
-    char *__insert_initial_char(char *message) const;
+    //char *__insert_initial_char(char *message, char *ret) const;
 
     const char msg_start = 38;
     const int msg_length_encoded = 16;

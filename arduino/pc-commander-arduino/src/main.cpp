@@ -5,11 +5,11 @@ SerialConnection *serial_connection;
 
 void setup()
 {
-    serial_connection = new SerialConnection();
+  serial_connection = new SerialConnection();
 }
 
 void loop()
-{
+{ 
     serial_connection->update();
     delay(1);
 }

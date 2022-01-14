@@ -251,7 +251,6 @@ bool ArduinoSerial::get_available_COM_ports()
 void ArduinoSerial::update()
 {
     if (serial->available() <= this->msg_length_encoded) {
-        std::cout << serial->available() << std::endl;
         return;
     }
 
