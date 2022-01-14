@@ -83,7 +83,7 @@ char *SerialConnection::encode(char *data, char *ret)
     CRC32 crc;
     uint32_t checksum = crc.calculate(data, this->msg_length_decoded - 4);
 
-    char message_data[this->msg_length_decoded];
+    unsigned char message_data[this->msg_length_decoded];
     for (int i = 0; i < this->msg_length_decoded - 4; i++)
     {
         message_data[i] = data[i];

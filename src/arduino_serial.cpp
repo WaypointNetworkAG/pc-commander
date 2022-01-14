@@ -129,6 +129,8 @@ char *ArduinoSerial::encode(char *data) const
 {
     uint32_t checksum = CRC::Calculate(data, this->msg_length_decoded - 4, CRC::CRC_32());
 
+    std::cout << checksum << std::endl;
+
     unsigned char message_data[this->msg_length_decoded];
     for (int i = 0; i < this->msg_length_decoded - 4; i++)
     {

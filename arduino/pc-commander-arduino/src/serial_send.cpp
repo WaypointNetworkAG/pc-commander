@@ -24,7 +24,7 @@ void SerialConnection::send_success_response()
 
 void SerialConnection::send_error_response()
 {
-    char *message = (char *)this->error_msg;
+    char *message = (char *)this->host_key;
 
     char encoded_message[this->msg_length_encoded + 1];
 
