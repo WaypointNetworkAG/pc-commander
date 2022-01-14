@@ -164,8 +164,11 @@ char *ArduinoSerial::decode(char *data)
 
 bool ArduinoSerial::verify_checksum(char *msg)
 {
-    char checksum_str[8];
+    char checksum_str[9];
     strncpy ( checksum_str, msg, 8 );
+    checksum_str[8] = '\0';
+
+    std::cout << checksum_str << std::endl;
 
     uint32_t checksum = CRC::Calculate(checksum_str, this->msg_length_decoded - 4, CRC::CRC_32());
 
