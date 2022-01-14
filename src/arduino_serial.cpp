@@ -59,9 +59,11 @@ ArduinoSerial::ArduinoSerial()
         char errorOpening = serial->openDevice("COM9", 115200);
         if (errorOpening == 1)
         {
+            std::cout << "Port COM9 opened" << std::endl;
             this->try_update = true;
             GXDQThread = std::thread(&ArduinoSerial::device_handshake, this);
             std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+            std::cout << "Sleep done" << std::endl;
             this->try_update = false;
             if (this->connected.load())
             {
@@ -101,6 +103,8 @@ ArduinoSerial::ArduinoSerial()
 void ArduinoSerial::device_handshake()
 {
     char *message = encode(const_cast<char *>(this->host_key));
+    std::cout << "Message:" << std::endl;
+    std::cout << message << std::endl;
 
     this->serial->writeString(message);
 
