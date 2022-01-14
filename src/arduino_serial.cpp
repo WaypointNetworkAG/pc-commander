@@ -262,6 +262,7 @@ void ArduinoSerial::update()
         serial->readChar(test, 100);
         std::cout << "char read:" << std::endl;
         std::cout << test << std::endl;
+        in_bytes[0] = test[0];
         if (in_bytes[0] == this->msg_start)
         {
             break;
