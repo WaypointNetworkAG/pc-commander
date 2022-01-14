@@ -67,10 +67,10 @@ char *SerialConnection::decode(char *data)
     return dec_string;
 }
 
-char *insert_newline(char *message)
+char *SerialConnection::__insert_initial_char(char *message) const
 {
-    char ret[strlen(message) + 1];
-    ret[0] = '\n';
+    char *ret = new char[strlen(message) + 1];
+    ret[0] = this->msg_start;
     for (int i = 0; i < strlen(message); i++)
     {
         ret[i + 1] = message[i];
@@ -96,7 +96,7 @@ char *SerialConnection::encode(char *data)
     char encoded_msg[this->msg_length_encoded];
     Base64.encode(encoded_msg, message_data, this->msg_length_decoded);
 
-    return insert_newline(encoded_msg);
+    return __insert_initial_char(encoded_msg);
 }
 
 bool SerialConnection::verify_checksum(char* msg)

@@ -112,10 +112,10 @@ void ArduinoSerial::device_handshake()
     }
 }
 
-char *insert_newline(const char *message)
+char * ArduinoSerial::__insert_initial_char(char *message) const
 {
     char* ret = new char[strlen(message) + 1];
-    ret[0] = '\n';
+    ret[0] = this->msg_start;
     for (int i = 0; i < strlen(message); i++)
     {
         ret[i + 1] = message[i];
@@ -140,7 +140,7 @@ char *ArduinoSerial::encode(char *data) const
     std::string result;
     result = base64::encode(message_data, this->msg_length_decoded);
 
-    return insert_newline(result.c_str());
+    return __insert_initial_char(const_cast<char *>(result.c_str()));
 }
 
 char *ArduinoSerial::decode(char *data)
