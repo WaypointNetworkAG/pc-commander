@@ -63,7 +63,7 @@ private:
     char *encode(char *data) const;
     bool verify_checksum(char *msg);
 
-    const char msg_start = 10;
+    const char msg_start = 38;
     const int msg_length_encoded = 16;
     const int msg_length_decoded = 12;
 

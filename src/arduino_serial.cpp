@@ -116,7 +116,7 @@ void ArduinoSerial::device_handshake()
 
 char *insert_newline(const char *message)
 {
-    char ret[strlen(message) + 1];
+    char* ret = new char[strlen(message) + 1];
     ret[0] = '\n';
     for (int i = 0; i < strlen(message); i++)
     {

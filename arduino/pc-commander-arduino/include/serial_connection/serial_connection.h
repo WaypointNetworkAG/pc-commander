@@ -20,8 +20,8 @@ private:
     void send_error_response();
     void send_handshake_response();
 
-    const char msg_start = 10;
-    const int msg_length_encoded = 24;
+    const char msg_start = 38;
+    const int msg_length_encoded = 16;
     const int msg_length_decoded = 12;
 
     const char *host_key      = "T6z$}~B{";
