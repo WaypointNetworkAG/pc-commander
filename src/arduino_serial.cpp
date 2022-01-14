@@ -48,6 +48,10 @@ ArduinoSerial::ArduinoSerial()
     serialib serial;
 
     get_available_COM_ports();
+    for (int i = 0; i < this->available_com_ports.size(); i++)
+    {
+        std::cout << this->available_com_ports[i] << std::endl;
+    }
     /*
     char errorOpening = serial.openDevice(SERIAL_PORT, 115200);
     if (errorOpening!=1)
@@ -115,6 +119,7 @@ bool ArduinoSerial::get_available_COM_ports()
 {
     DWORD test;
     bool gotPort = 0; // in case the port is not found
+    TCHAR COMPath[5000];
 
     for(int i = 0; i < 255; i++) // checking ports from COM0 to COM255
     {
@@ -125,18 +130,18 @@ bool ArduinoSerial::get_available_COM_ports()
         strcpy(ComName,"COM");
         strcat(ComName,number_str);
 
-        test = QueryDosDevice(ComName, (LPSTR)this->COMPaths, 5000);
+        test = QueryDosDevice(ComName, (LPSTR)COMPath, 5000);
 
         // Test the return value and error if any
         if(test != 0) //QueryDosDevice returns zero if it didn't find an object
         {
-            std::cout << this->COMPaths << std::endl;
             gotPort = 1; // found port
+            this->available_com_ports.push_back(ComName);
         }
 
         if(::GetLastError() == ERROR_INSUFFICIENT_BUFFER)
         {
-            this->COMPaths[10000]; // in case the buffer got filled, increase size of the buffer.
+            COMPath[10000]; // in case the buffer got filled, increase size of the buffer.
             continue;
         }
     }

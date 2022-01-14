@@ -45,8 +45,7 @@ public:
     void shutdown();
 private:
     bool get_available_COM_ports();
-
-    TCHAR COMPaths[5000];
+    std::vector<char*> available_com_ports;
 };
 
 #endif //TEST_ARDUINO_SERIAL_H_
