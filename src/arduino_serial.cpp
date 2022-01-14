@@ -309,7 +309,10 @@ void ArduinoSerial::update()
 
     std::cout << dec_msg << std::endl;
 
-    if (!verify_checksum(dec_msg))
+    char checksum_str[8];
+    strncpy ( checksum_str, dec_msg, 8 );
+
+    if (!verify_checksum(checksum_str))
     {
         if (connected) { /*send_error_response();*/ }
         return;
