@@ -15,6 +15,17 @@ target_include_directories(
 )
 
 add_library(
+        base64
+        src/base64/base64.cpp
+)
+
+target_include_directories(
+        base64
+        PUBLIC
+        include/base64
+)
+
+add_library(
         arduino_serial
         src/arduino_serial.cpp
 )
@@ -25,6 +36,7 @@ target_include_directories(
         include/arduino_serial
         include/crc
         include/cppcodec
+        include/base64
 )
 
 target_link_libraries(

@@ -39,6 +39,8 @@
 #include <iostream>
 #include <thread>
 
+#include "base64.h"
+
 #pragma comment(lib, "user32.lib")
 #pragma comment(lib, "advapi32.lib")
 
@@ -289,7 +291,11 @@ void ArduinoSerial::update()
 
     std::cout << in_bytes << std::endl;
 
-    std::vector<std::uint8_t> ret = base64::decode(in_bytes, strlen(in_bytes));
+    std::string ret = base64_decode(in_bytes);
+
+    std::cout << ret << std::endl;
+
+    //std::vector<std::uint8_t> ret = base64::decode(in_bytes, strlen(in_bytes));
 
     //char* dec_string = new char[this->msg_length_decoded];
 
