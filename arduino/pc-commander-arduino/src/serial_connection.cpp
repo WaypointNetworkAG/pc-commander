@@ -98,12 +98,14 @@ char *SerialConnection::encode(char *data)
     message_data[this->msg_length_decoded - 2] = ((uint32_t)checksum >> 16) & 0xFF;
     message_data[this->msg_length_decoded - 1] = ((uint32_t)checksum >> 24) & 0xFF;
     */
-    char encoded_msg[this->msg_length_encoded + 1];
+    char encoded_msg[this->msg_length_encoded + 2];
     Base64.encode(encoded_msg, message_data, this->msg_length_decoded);
 
     //encoded_msg[this->msg_length_encoded] = 38;
 
-    return encoded_msg /*__insert_initial_char(encoded_msg)*/;
+    //char testmsg[10] = "AAAAAAAAA";
+
+    return "AAAAAAAAAAAAAAAA" /*__insert_initial_char(encoded_msg)*/;
 }
 
 bool SerialConnection::verify_checksum(char* msg)
