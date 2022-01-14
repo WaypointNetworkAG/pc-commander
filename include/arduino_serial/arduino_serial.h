@@ -40,6 +40,7 @@
 #include <vector>
 #include <base64_rfc4648.hpp>
 #include <CRC.h>
+#include <atomic>
 
 using base64 = cppcodec::base64_rfc4648;
 
