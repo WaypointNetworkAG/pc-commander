@@ -103,8 +103,6 @@ ArduinoSerial::ArduinoSerial()
 void ArduinoSerial::device_handshake()
 {
     char *message = encode(const_cast<char *>(this->host_key));
-    std::cout << "Message:" << std::endl;
-    std::cout << message << std::endl;
 
     this->serial->writeString(message);
 
@@ -122,7 +120,6 @@ char *insert_newline(const char *message)
     {
         ret[i + 1] = message[i];
     }
-    std::cout << ret << std::endl;
     return ret;
 }
 
@@ -140,12 +137,8 @@ char *ArduinoSerial::encode(char *data) const
     message_data[this->msg_length_decoded - 2] = ((uint32_t)checksum >> 16) & 0xFF;
     message_data[this->msg_length_decoded - 1] = ((uint32_t)checksum >> 24) & 0xFF;
 
-    std::cout << message_data << std::endl;
-
     std::string result;
     result = base64::encode(message_data, this->msg_length_decoded);
-
-    std::cout << result << std::endl;
 
     return insert_newline(result.c_str());
 }
@@ -253,7 +246,12 @@ bool ArduinoSerial::get_available_COM_ports()
 
 void ArduinoSerial::update()
 {
-    if (serial->available() <= this->msg_length_encoded) { return; }
+    if (serial->available() <= this->msg_length_encoded) {
+        std::cout << "Serial buffer: " + std::to_string(serial->available()) << std::endl;
+        return;
+    }
+
+    std::cout << "Serial response!" << std::endl;
 
     char in_bytes[this->msg_length_encoded];
 
