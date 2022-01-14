@@ -291,7 +291,7 @@ void ArduinoSerial::update()
 
     std::cout << in_bytes << std::endl;
 
-    std::string ret = base64_decode(in_bytes);
+    std::string ret = base64_decode(in_bytes, true);
 
     std::cout << ret << std::endl;
 
