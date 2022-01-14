@@ -250,10 +250,7 @@ bool ArduinoSerial::get_available_COM_ports()
 
 void ArduinoSerial::update()
 {
-    if (serial->available() <= this->msg_length_encoded) {
-        std::cout << "Serial buffer: " + std::to_string(serial->available()) << std::endl;
-        return;
-    }
+    if (serial->available() <= this->msg_length_encoded) { return; }
 
     std::cout << "Serial response!" << std::endl;
 
@@ -274,6 +271,8 @@ void ArduinoSerial::update()
     {
         serial->readChar(reinterpret_cast<char *>(in_bytes[n]), 0);
     }
+
+    std::cout << in_bytes << std::endl;
 
     char* dec_msg = decode(in_bytes);
 
