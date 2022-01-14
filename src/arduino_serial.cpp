@@ -166,7 +166,11 @@ bool ArduinoSerial::verify_checksum(char *msg)
 {
     uint32_t checksum = CRC::Calculate(msg, this->msg_length_decoded - 4, CRC::CRC_32());
 
+    std::cout << checksum << std::endl;
+
     uint32_t rec_checksum;
+
+    std::cout << rec_checksum << std::endl;
 
     rec_checksum = msg[this->msg_length_decoded - 1];
     rec_checksum = rec_checksum << 8;
