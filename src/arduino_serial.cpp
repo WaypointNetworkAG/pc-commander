@@ -285,6 +285,7 @@ void ArduinoSerial::update()
     }
 
      */
+    in_bytes[strlen(in_bytes) - 1] = '\0';
 
     std::cout << in_bytes << std::endl;
 
