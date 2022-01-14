@@ -130,7 +130,7 @@ bool ArduinoSerial::get_available_COM_ports()
         // Test the return value and error if any
         if(test != 0) //QueryDosDevice returns zero if it didn't find an object
         {
-            std::cout << ComName << std::endl;
+            std::cout << this->COMPaths << std::endl;
             gotPort = 1; // found port
         }
 
