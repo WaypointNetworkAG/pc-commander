@@ -118,9 +118,12 @@ bool ArduinoSerial::get_available_COM_ports()
 
     for(int i = 0; i < 255; i++) // checking ports from COM0 to COM255
     {
-        CString str;
-        str.Format(_T("%d"),i);
-        CString ComName = CString("COM") + CString(str); // converting to COM0, COM1, COM2
+        char number_str[10];
+        sprintf(number_str, "%d", i);
+
+        char *ComName = new char[strlen("COM") + strlen(number_str) + 1];
+        strcpy(ComName,"COM");
+        strcat(ComName,number_str);
 
         test = QueryDosDevice(ComName, (LPSTR)this->COMPaths, 5000);
 
