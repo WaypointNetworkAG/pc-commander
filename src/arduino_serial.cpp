@@ -289,9 +289,9 @@ void ArduinoSerial::update()
 
     std::cout << in_bytes << std::endl;
 
-    std::vector<std::uint8_t> ret = base64::decode(in_bytes, this->msg_length_encoded);
+    //std::vector<std::uint8_t> ret = base64::decode(in_bytes, this->msg_length_encoded);
 
-    char* dec_string = new char[this->msg_length_decoded];
+    //char* dec_string = new char[this->msg_length_decoded];
 
     //std::copy(ret.begin(), ret.end(),dec_string);
 
