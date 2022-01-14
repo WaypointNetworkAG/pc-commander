@@ -260,7 +260,7 @@ void ArduinoSerial::update()
 
     std::cout << "Serial response!" << std::endl;
 
-    char* in_bytes;
+    char* in_bytes = new char[this->msg_length_encoded];
 
     serial->readString(in_bytes, this->msg_start, 17);
 
