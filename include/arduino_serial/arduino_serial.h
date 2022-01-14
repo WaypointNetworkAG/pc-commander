@@ -64,7 +64,7 @@ private:
     bool verify_checksum(char *msg);
 
     const char msg_start = 10;
-    const int msg_length_encoded = 24;
+    const int msg_length_encoded = 16;
     const int msg_length_decoded = 12;
 
     const char *host_key      = "T6z$}~B{";
