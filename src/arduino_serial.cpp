@@ -37,6 +37,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
+#include <thread>
 
 #pragma comment(lib, "user32.lib")
 #pragma comment(lib, "advapi32.lib")
@@ -45,12 +46,33 @@
 
 ArduinoSerial::ArduinoSerial()
 {
-    serialib serial;
+    this->serial = new serialib();
 
     get_available_COM_ports();
+
+    std::thread GXDQThread;
+
     for (int i = 0; i < this->available_com_ports.size(); i++)
     {
         std::cout << this->available_com_ports[i] << std::endl;
+
+        char errorOpening = serial->openDevice(this->available_com_ports[i], 115200);
+        if (errorOpening == 1)
+        {
+            this->try_update = true;
+            GXDQThread = std::thread(&ArduinoSerial::device_handshake, this);
+            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+            this->try_update = false;
+            if (this->connected.load())
+            {
+                std::cout << "Connected!" << std::endl;
+                break;
+            }
+            else
+            {
+                GXDQThread.join();
+            }
+        }
     }
     /*
     char errorOpening = serial.openDevice(SERIAL_PORT, 115200);
@@ -74,6 +96,77 @@ ArduinoSerial::ArduinoSerial()
         }
     }
      */
+}
+
+void ArduinoSerial::device_handshake()
+{
+    char *message = encode(const_cast<char *>(this->host_key));
+
+    this->serial->writeString(message);
+
+    while (!this->connected.load() && this->try_update.load())
+    {
+        update();
+    }
+}
+
+char *insert_newline(const char *message)
+{
+    char ret[strlen(message) + 1];
+    ret[0] = '\n';
+    for (int i = 0; i < strlen(message); i++)
+    {
+        ret[i + 1] = message[i];
+    }
+    return ret;
+}
+
+char *ArduinoSerial::encode(char *data) const
+{
+    uint32_t checksum = CRC::Calculate(data, this->msg_length_decoded - 4, CRC::CRC_32());
+
+    unsigned char message_data[this->msg_length_decoded];
+    for (int i = 0; i < this->msg_length_decoded - 4; i++)
+    {
+        message_data[i] = data[i];
+    }
+    message_data[this->msg_length_decoded - 4] = ((uint32_t)checksum >> 0) & 0xFF;
+    message_data[this->msg_length_decoded - 3] = ((uint32_t)checksum >> 8) & 0xFF;
+    message_data[this->msg_length_decoded - 2] = ((uint32_t)checksum >> 16) & 0xFF;
+    message_data[this->msg_length_decoded - 1] = ((uint32_t)checksum >> 24) & 0xFF;
+
+    std::string result;
+    result = base64::encode(message_data, this->msg_length_decoded);
+
+    return insert_newline(result.c_str());
+}
+
+char *ArduinoSerial::decode(char *data)
+{
+    char* dec_string = new char[this->msg_length_decoded];
+
+    std::vector<std::uint8_t> ret = base64::decode(data, this->msg_length_encoded);
+
+    std::copy(ret.begin(), ret.end(),dec_string);
+
+    return dec_string;
+}
+
+bool ArduinoSerial::verify_checksum(char *msg)
+{
+    uint32_t checksum = CRC::Calculate(msg, this->msg_length_decoded - 4, CRC::CRC_32());
+
+    uint32_t rec_checksum;
+
+    rec_checksum = msg[this->msg_length_decoded - 1];
+    rec_checksum = rec_checksum << 8;
+    rec_checksum = rec_checksum | msg[this->msg_length_decoded - 2];
+    rec_checksum = rec_checksum << 8;
+    rec_checksum = rec_checksum | msg[this->msg_length_decoded - 3];
+    rec_checksum = rec_checksum << 8;
+    rec_checksum = rec_checksum | msg[this->msg_length_decoded - 4];
+
+    return checksum == rec_checksum;
 }
 
 void ArduinoSerial::shutdown()
@@ -147,4 +240,46 @@ bool ArduinoSerial::get_available_COM_ports()
     }
 
     return gotPort;
+}
+
+void ArduinoSerial::update()
+{
+    if (serial->available() <= this->msg_length_encoded) { return; }
+
+    char in_bytes[this->msg_length_encoded];
+
+    while (serial->available())
+    {
+        serial->readChar(reinterpret_cast<char *>(in_bytes[0]), 0);
+        if (in_bytes[0] == this->msg_start)
+        {
+            break;
+        }
+    }
+
+    if (serial->available() != this->msg_length_encoded) { return; }
+
+    for (int n = 0; n < this->msg_length_encoded; n++)
+    {
+        serial->readChar(reinterpret_cast<char *>(in_bytes[n]), 0);
+    }
+
+    char* dec_msg = decode(in_bytes);
+
+    if (!verify_checksum(dec_msg))
+    {
+        if (connected) { /*send_error_response();*/ }
+        return;
+    }
+
+    char message[this->msg_length_decoded - 4];
+    for (int i = 0; i < this->msg_length_decoded - 4; i++)
+    {
+        message[i] = dec_msg[i];
+    }
+
+    if (strcmp(message, this->device_key) == 0)
+    {
+        this->connected = true;
+    }
 }

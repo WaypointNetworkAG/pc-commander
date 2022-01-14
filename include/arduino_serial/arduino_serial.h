@@ -38,15 +38,43 @@
 #include "serialib.h"
 #include <windows.h>
 #include <vector>
+#include "serial/serial.h"
+#include <base64_rfc4648.hpp>
+#include <CRC.h>
+
+using base64 = cppcodec::base64_rfc4648;
 
 class ArduinoSerial
 {
 public:
     ArduinoSerial();
     void shutdown();
+    void update();
+
 private:
+    serialib *serial;
+
     bool get_available_COM_ports();
     std::vector<char*> available_com_ports;
+
+    void device_handshake();
+
+    char *decode(char *data);
+    char *encode(char *data) const;
+    bool verify_checksum(char *msg);
+
+    const char msg_start = 10;
+    const int msg_length_encoded = 24;
+    const int msg_length_decoded = 12;
+
+    const char *host_key      = "T6z$}~B{";
+    const char *device_key    = "GXB)5jbS";
+    const char *success_msg   = "SUCCESS!";
+    const char *error_msg     = "ERROR!--";
+    const char *heartbeat_msg = "STATUS--";
+
+    std::atomic<bool> connected{false};
+    std::atomic<bool> try_update{false};
 };
 
 #endif //TEST_ARDUINO_SERIAL_H_

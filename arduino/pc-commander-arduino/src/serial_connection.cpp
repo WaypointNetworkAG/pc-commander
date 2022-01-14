@@ -41,8 +41,11 @@ void SerialConnection::update()
         return;
     }
     
-    char message[this->msg_length_decoded];
-    strcpy(message, dec_msg);
+    char message[this->msg_length_decoded - 4];
+    for (int i = 0; i < this->msg_length_decoded - 4; i++)
+    {
+        message[i] = dec_msg[i];
+    }
 
     if (strcmp(message, this->host_key) == 0)
     {
@@ -64,12 +67,23 @@ char *SerialConnection::decode(char *data)
     return dec_string;
 }
 
+char *insert_newline(char *message)
+{
+    char ret[strlen(message) + 1];
+    ret[0] = '\n';
+    for (int i = 0; i < strlen(message); i++)
+    {
+        ret[i + 1] = message[i];
+    }
+    return ret;
+}
+
 char *SerialConnection::encode(char *data)
 {
     CRC32 crc;
     uint32_t checksum = crc.calculate(data, this->msg_length_decoded - 4);
 
-    char message_data[this->msg_length_decoded];
+    unsigned char message_data[this->msg_length_decoded];
     for (int i = 0; i < this->msg_length_decoded - 4; i++)
     {
         message_data[i] = data[i];
@@ -82,7 +96,7 @@ char *SerialConnection::encode(char *data)
     char encoded_msg[this->msg_length_encoded];
     Base64.encode(encoded_msg, message_data, this->msg_length_decoded);
 
-    return encoded_msg;
+    return insert_newline(encoded_msg);
 }
 
 bool SerialConnection::verify_checksum(char* msg)

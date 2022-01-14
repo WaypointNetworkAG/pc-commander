@@ -2,7 +2,7 @@
 
 void SerialConnection::send_handshake_response()
 {
-    char *message = (char *)this->host_key;
+    char *message = (char *)this->device_key;
 
     char *enc_message = encode(message);
 

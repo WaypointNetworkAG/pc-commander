@@ -23,6 +23,8 @@ target_include_directories(
         arduino_serial
         PUBLIC
         include/arduino_serial
+        include/crc
+        include/cppcodec
 )
 
 target_link_libraries(
