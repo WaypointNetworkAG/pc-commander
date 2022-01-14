@@ -34,7 +34,10 @@
 
 #include "arduino_serial.h"
 
-#define SERIAL_PORT "COM1"
+#include <stdio.h>
+#include <stdlib.h>
+
+#define SERIAL_PORT "/dev/tty.usbmodem1201"
 
 ArduinoSerial::ArduinoSerial()
 {
@@ -46,13 +49,15 @@ ArduinoSerial::ArduinoSerial()
     else
         printf ("Successful connection to %s\n",SERIAL_PORT);
 
-    char* buf;
+    char* buf = new char[100];
 
     while(true)
     {
         serial.readString(buf, '\n', 100);
-        if (strcmp(buf, "return") == 0)
+        std::cout << buf << std::endl;
+        if (strcmp(buf, "return\n") == 0)
         {
+            system(R"(c:\windows\system32\shutdown /i)");
             break;
         }
     }
