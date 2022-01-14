@@ -37,6 +37,7 @@
 
 #include "serialib.h"
 #include <windows.h>
+#include <vector>
 
 class ArduinoSerial
 {
