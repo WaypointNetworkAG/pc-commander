@@ -103,7 +103,7 @@ char *SerialConnection::encode(char *data)
 
     encoded_msg[this->msg_length_encoded] = 38;
 
-    return encoded_msg /*__insert_initial_char(encoded_msg)*/;
+    return "AAAAAAAAAAAAAAAA" /*__insert_initial_char(encoded_msg)*/;
 }
 
 bool SerialConnection::verify_checksum(char* msg)
