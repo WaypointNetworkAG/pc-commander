@@ -83,7 +83,7 @@ char *SerialConnection::encode(char *data)
     CRC32 crc;
     uint32_t checksum = crc.calculate(data, this->msg_length_decoded - 4);
 
-    unsigned char message_data[this->msg_length_decoded];
+    char message_data[this->msg_length_decoded];
     for (int i = 0; i < this->msg_length_decoded - 4; i++)
     {
         message_data[i] = data[i];
@@ -93,10 +93,12 @@ char *SerialConnection::encode(char *data)
     message_data[this->msg_length_decoded - 2] = ((uint32_t)checksum >> 16) & 0xFF;
     message_data[this->msg_length_decoded - 1] = ((uint32_t)checksum >> 24) & 0xFF;
 
-    char encoded_msg[this->msg_length_encoded];
+    char encoded_msg[this->msg_length_encoded + 1];
     Base64.encode(encoded_msg, message_data, this->msg_length_decoded);
 
-    return __insert_initial_char(encoded_msg);
+    encoded_msg[this->msg_length_encoded] = 38;
+
+    return encoded_msg /*__insert_initial_char(encoded_msg)*/;
 }
 
 bool SerialConnection::verify_checksum(char* msg)

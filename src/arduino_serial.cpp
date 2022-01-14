@@ -256,6 +256,10 @@ void ArduinoSerial::update()
 
     char in_bytes[this->msg_length_encoded];
 
+    serial->readString(in_bytes, this->msg_start, 17);
+
+    /*
+
     while (serial->available())
     {
         char* test;
@@ -275,6 +279,8 @@ void ArduinoSerial::update()
     {
         serial->readChar(reinterpret_cast<char *>(in_bytes[n]), 0);
     }
+
+     */
 
     std::cout << in_bytes << std::endl;
 
