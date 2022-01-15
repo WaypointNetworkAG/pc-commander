@@ -59,9 +59,9 @@ private:
 
     void device_handshake();
 
-    char *decode(char *data, char* ret);
+    unsigned char *decode(char *data);
     char *encode(char *data, char* ret) const;
-    bool verify_checksum(char *msg);
+    bool verify_checksum(unsigned char *msg);
 
     char * __insert_initial_char(char *message) const;
 

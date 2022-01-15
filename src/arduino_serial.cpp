@@ -156,36 +156,31 @@ char *ArduinoSerial::encode(char *data, char* ret) const
     return ret;
 }
 
-char *ArduinoSerial::decode(char *data, char *ret)
+unsigned char *ArduinoSerial::decode(char *data)
 {
     std::vector<std::uint8_t> ret_vec = base64::decode(data, this->msg_length_encoded);
 
+    unsigned char *ret = new unsigned char[this->msg_length_decoded + 1];
     std::copy(ret_vec.begin(), ret_vec.end(), ret);
 
     return ret;
 }
 
-bool ArduinoSerial::verify_checksum(char *msg)
+bool ArduinoSerial::verify_checksum(unsigned char *msg)
 {
-    char checksum_str[9];
-    strncpy ( checksum_str, msg, 8 );
-    checksum_str[8] = '\0';
-
-    std::cout << checksum_str << std::endl;
-
-    uint32_t checksum = CRC::Calculate(checksum_str, this->msg_length_decoded - 4, CRC::CRC_32());
+    uint32_t checksum = CRC::Calculate(msg, this->msg_length_decoded - 4, CRC::CRC_32());
 
     std::cout << checksum << std::endl;
 
     uint32_t rec_checksum;
 
-    rec_checksum = msg[this->msg_length_decoded - 4];
-    rec_checksum = rec_checksum << 8;
-    rec_checksum = rec_checksum | msg[this->msg_length_decoded - 3];
+    rec_checksum = msg[this->msg_length_decoded - 1];
     rec_checksum = rec_checksum << 8;
     rec_checksum = rec_checksum | msg[this->msg_length_decoded - 2];
     rec_checksum = rec_checksum << 8;
-    rec_checksum = rec_checksum | msg[this->msg_length_decoded - 1];
+    rec_checksum = rec_checksum | msg[this->msg_length_decoded - 3];
+    rec_checksum = rec_checksum << 8;
+    rec_checksum = rec_checksum | msg[this->msg_length_decoded - 4];
 
     std::cout << rec_checksum << std::endl;
 
@@ -312,9 +307,7 @@ void ArduinoSerial::update()
 
     //std::copy(ret.begin(), ret.end(),dec_string);
 
-    char *decbuf = new char[this->msg_length_decoded + 1];
-
-    char* dec_msg = decode(in_bytes, decbuf);
+    unsigned char* dec_msg = decode(in_bytes);
 
     std::cout << dec_msg << std::endl;
 
@@ -339,5 +332,5 @@ void ArduinoSerial::update()
     }
     */
 
-    delete[] decbuf;
+    delete[] dec_msg;
 }
