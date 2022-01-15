@@ -42,16 +42,9 @@ void SerialConnection::update()
     }
     else
     {
-        /*
-        char message[this->msg_length_decoded - 4];
-        for (int i = 0; i < this->msg_length_decoded - 4; i++)
-        {
-            message[i] = dec_msg[i];
-        }
-        */
-
-        String message = (char*)dec_msg;
-        message.remove(8, this->msg_length_decoded - 8);
+        char *message = new char[this->msg_length_decoded - 3];
+        strncpy(message, reinterpret_cast<const char *>(dec_msg), 8);
+        message[8] = '\0';
 
         if (message == this->host_key)
         {
@@ -62,6 +55,7 @@ void SerialConnection::update()
         {
             send_success_response();
         }
+        delete[] message;
     }
 
     delete[] dec_msg;

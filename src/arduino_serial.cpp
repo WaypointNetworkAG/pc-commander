@@ -44,8 +44,6 @@
 #pragma comment(lib, "user32.lib")
 #pragma comment(lib, "advapi32.lib")
 
-#define SERIAL_PORT "COM9"
-
 ArduinoSerial::ArduinoSerial()
 {
     this->serial = new serialib();
@@ -54,18 +52,18 @@ ArduinoSerial::ArduinoSerial()
 
     std::thread GXDQThread;
 
-    for (int i = 0; i < this->available_com_ports.size(); i++)
+    for (auto & available_com_port : this->available_com_ports)
     {
-        std::cout << this->available_com_ports[i] << std::endl;
+        std::cout << available_com_port << std::endl;
 
-        char errorOpening = serial->openDevice("COM9", 115200);
+        char errorOpening = serial->openDevice(available_com_port, 115200);
         if (errorOpening == 1)
         {
-            std::cout << "Port COM9 opened" << std::endl;
             this->try_update = true;
+
             GXDQThread = std::thread(&ArduinoSerial::device_handshake, this);
             std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-            std::cout << "Sleep done" << std::endl;
+
             this->try_update = false;
             if (this->connected.load())
             {
@@ -78,6 +76,8 @@ ArduinoSerial::ArduinoSerial()
             }
         }
     }
+
+    std::cout << "Serial Constructor done!" << std::endl;
     /*
     char errorOpening = serial.openDevice(SERIAL_PORT, 115200);
     if (errorOpening!=1)
@@ -116,22 +116,9 @@ void ArduinoSerial::device_handshake()
     }
 }
 
-char * ArduinoSerial::__insert_initial_char(char *message) const
-{
-    char* ret = new char[strlen(message) + 1];
-    ret[0] = this->msg_end;
-    for (int i = 0; i < strlen(message); i++)
-    {
-        ret[i + 1] = message[i];
-    }
-    return ret;
-}
-
 char *ArduinoSerial::encode(char *data)
 {
     uint32_t checksum = CRC::Calculate(data, this->msg_length_decoded - 4, CRC::CRC_32());
-
-    std::cout << checksum << std::endl;
 
     unsigned char message_data[this->msg_length_decoded];
     for (int i = 0; i < this->msg_length_decoded - 4; i++)
@@ -148,15 +135,13 @@ char *ArduinoSerial::encode(char *data)
     //result += '&';
     result.insert(0, 1, this->msg_end);
 
-    std::cout << result << std::endl;
-
     char *ret = new char[this->msg_length_encoded + 2];
     strcpy((char *)ret, result.c_str());
 
     return ret;
 }
 
-unsigned char *ArduinoSerial::decode(char *data)
+unsigned char *ArduinoSerial::decode(char *data) const
 {
     std::vector<std::uint8_t> ret_vec = base64::decode(data, this->msg_length_encoded);
 
@@ -166,11 +151,9 @@ unsigned char *ArduinoSerial::decode(char *data)
     return ret;
 }
 
-bool ArduinoSerial::verify_checksum(unsigned char *msg)
+bool ArduinoSerial::verify_checksum(unsigned char *msg) const
 {
     uint32_t checksum = CRC::Calculate(msg, this->msg_length_decoded - 4, CRC::CRC_32());
-
-    std::cout << checksum << std::endl;
 
     uint32_t rec_checksum;
 
@@ -181,8 +164,6 @@ bool ArduinoSerial::verify_checksum(unsigned char *msg)
     rec_checksum = rec_checksum | msg[this->msg_length_decoded - 3];
     rec_checksum = rec_checksum << 8;
     rec_checksum = rec_checksum | msg[this->msg_length_decoded - 4];
-
-    std::cout << rec_checksum << std::endl;
 
     return checksum == rec_checksum;
 }
@@ -277,23 +258,20 @@ void ArduinoSerial::update()
     if (!verify_checksum(dec_msg))
     {
         if (connected) { /*send_error_response();*/ }
-        return;
     }
-
-    std::cout << "Checksum successful" << std::endl;
-
-    char *message = new char[this->msg_length_decoded - 3];
-    strncpy(message, reinterpret_cast<const char *>(dec_msg), 8);
-    message[8] = '\0';
-
-    std::cout << message << std::endl;
-
-    if (strcmp(message, this->device_key) == 0)
+    else
     {
-        std::cout << "Connection successful" << std::endl;
-        this->connected = true;
+        char *message = new char[this->msg_length_decoded - 3];
+        strncpy(message, reinterpret_cast<const char *>(dec_msg), 8);
+        message[8] = '\0';
+
+        if (strcmp(message, this->device_key) == 0)
+        {
+            this->connected = true;
+        }
+
+        delete[] message;
     }
 
-    delete[] message;
     delete[] dec_msg;
 }
