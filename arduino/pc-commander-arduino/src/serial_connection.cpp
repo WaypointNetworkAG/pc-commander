@@ -11,6 +11,7 @@ SerialConnection::SerialConnection()
     while(!this->connected)
     {
         update();
+        delay(1);
     }
 }
 
@@ -33,15 +34,18 @@ void SerialConnection::update()
         in_bytes[n] = Serial.read();
     }
 
-    char *decbuf = new char[this->msg_length_decoded + 1];
-    char *dec_msg = decode(in_bytes, decbuf);
+    unsigned char *dec_msg = decode(in_bytes);
 
     if (!verify_checksum(dec_msg))
     {
         send_error_response();
-        return;
+    }
+    else
+    {
+        send_success_response();
     }
     
+    /*
     char message[this->msg_length_decoded - 4];
     for (int i = 0; i < this->msg_length_decoded - 4; i++)
     {
@@ -57,30 +61,20 @@ void SerialConnection::update()
     {
         send_success_response();
     }
+    */
 
-    delete[] decbuf;
+    delete[] dec_msg;
 }
 
-char *SerialConnection::decode(char *data, char *ret)
+unsigned char *SerialConnection::decode(char *data)
 {
-
+    unsigned char *ret = new unsigned char[this->msg_length_decoded + 1];
     Base64.decode(ret, data, this->msg_length_encoded);
 
     return ret;
 }
-/*
-char *SerialConnection::__insert_initial_char(char *message, char *ret) const
-{
-    char *ret = new char[strlen(message) + 1];
-    ret[0] = this->msg_start;
-    for (int i = 0; i < strlen(message); i++)
-    {
-        ret[i + 1] = message[i];
-    }
-    return ret;
-}
-*/
-char *SerialConnection::encode(char *data, char *ret)
+
+char *SerialConnection::encode(char *data)
 {
     CRC32 crc;
     uint32_t checksum = crc.calculate(data, this->msg_length_decoded - 4);
@@ -96,26 +90,22 @@ char *SerialConnection::encode(char *data, char *ret)
     message_data[this->msg_length_decoded - 2] = ((uint32_t)checksum >> 16) & 0xFF;
     message_data[this->msg_length_decoded - 1] = ((uint32_t)checksum >> 24) & 0xFF;
     
-    /*
-    char *enc_input = "12345678AAAA";
-    char *encoded_msg;
-    Base64.encode(encoded_msg, enc_input, this->msg_length_decoded);
-    */
-
     int encodedLength = Base64.encodedLength(this->msg_length_decoded);
     char encodedString[encodedLength];
     Base64.encode(encodedString, message_data, this->msg_length_decoded);
 
-    String strmsg = encodedString;
-    strmsg += '&';
-    strcpy((char *)ret, strmsg.c_str());
+    char *ret = new char[this->msg_length_encoded + 2];
 
-    //encoded_msg[this->msg_length_encoded] = 38;
+    ret[0] = this->msg_start;
+    for (int i = 0; i < strlen(encodedString); i++)
+    {
+        ret[i + 1] = encodedString[i];
+    }
 
-    return ret /*__insert_initial_char(encoded_msg)*/;
+    return ret;
 }
 
-bool SerialConnection::verify_checksum(char* msg)
+bool SerialConnection::verify_checksum(unsigned char *msg)
 {
     CRC32 crc;
 
