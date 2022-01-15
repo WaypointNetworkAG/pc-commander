@@ -104,9 +104,12 @@ ArduinoSerial::ArduinoSerial()
 
 void ArduinoSerial::device_handshake()
 {
-    char *message = encode(const_cast<char *>(this->host_key));
+    char *retbuf = new char[this->msg_length_encoded + 2];
+    char *message = encode(const_cast<char *>(this->host_key), retbuf);
 
     this->serial->writeString(message);
+
+    delete[] retbuf;
 
     while (!this->connected.load() && this->try_update.load())
     {
@@ -125,7 +128,7 @@ char * ArduinoSerial::__insert_initial_char(char *message) const
     return ret;
 }
 
-char *ArduinoSerial::encode(char *data) const
+char *ArduinoSerial::encode(char *data, char* ret) const
 {
     uint32_t checksum = CRC::Calculate(data, this->msg_length_decoded - 4, CRC::CRC_32());
 
@@ -142,26 +145,21 @@ char *ArduinoSerial::encode(char *data) const
     message_data[this->msg_length_decoded - 1] = ((uint32_t)checksum >> 24) & 0xFF;
 
     std::string result;
-    result = base64::encode(message_data, this->msg_length_decoded);
+    base64::encode(result, message_data, this->msg_length_decoded);
+    result.insert(0, 1, '&');
 
-    char* ret = __insert_initial_char(const_cast<char *>(result.c_str()));
-
-    std::cout << ret << std::endl;
+    strcpy((char *)ret, result.c_str());
 
     return ret;
 }
 
-char *ArduinoSerial::decode(char *data)
+char *ArduinoSerial::decode(char *data, char *ret)
 {
-    char* dec_string = new char[this->msg_length_decoded];
+    std::vector<std::uint8_t> ret_vec = base64::decode(data, this->msg_length_encoded);
 
-    std::vector<std::uint8_t> ret = base64::decode(data, this->msg_length_encoded);
+    std::copy(ret_vec.begin(), ret_vec.end(), ret);
 
-    std::copy(ret.begin(), ret.end(),dec_string);
-
-    std::cout << "Test" << std::endl;
-
-    return dec_string;
+    return ret;
 }
 
 bool ArduinoSerial::verify_checksum(char *msg)

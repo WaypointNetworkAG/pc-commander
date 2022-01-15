@@ -35,7 +35,7 @@ void SerialConnection::update()
 
     char dec_string[this->msg_length_decoded];
     char *dec_msg = decode(in_bytes, dec_string);
-
+    
     if (!verify_checksum(dec_msg))
     {
         send_error_response();
