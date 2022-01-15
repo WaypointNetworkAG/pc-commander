@@ -136,10 +136,10 @@ char *ArduinoSerial::encode(char *data) const
     {
         message_data[i] = data[i];
     }
-    message_data[this->msg_length_decoded - 1] = ((uint32_t)checksum >> 0) & 0xFF;
-    message_data[this->msg_length_decoded - 2] = ((uint32_t)checksum >> 8) & 0xFF;
-    message_data[this->msg_length_decoded - 3] = ((uint32_t)checksum >> 16) & 0xFF;
-    message_data[this->msg_length_decoded - 4] = ((uint32_t)checksum >> 24) & 0xFF;
+    message_data[this->msg_length_decoded - 4] = ((uint32_t)checksum >> 0) & 0xFF;
+    message_data[this->msg_length_decoded - 3] = ((uint32_t)checksum >> 8) & 0xFF;
+    message_data[this->msg_length_decoded - 2] = ((uint32_t)checksum >> 16) & 0xFF;
+    message_data[this->msg_length_decoded - 1] = ((uint32_t)checksum >> 24) & 0xFF;
 
     std::string result;
     result = base64::encode(message_data, this->msg_length_decoded);
@@ -178,13 +178,13 @@ bool ArduinoSerial::verify_checksum(char *msg)
 
     uint32_t rec_checksum;
 
-    rec_checksum = msg[this->msg_length_decoded - 1];
-    rec_checksum = rec_checksum << 8;
-    rec_checksum = rec_checksum | msg[this->msg_length_decoded - 2];
+    rec_checksum = msg[this->msg_length_decoded - 4];
     rec_checksum = rec_checksum << 8;
     rec_checksum = rec_checksum | msg[this->msg_length_decoded - 3];
     rec_checksum = rec_checksum << 8;
-    rec_checksum = rec_checksum | msg[this->msg_length_decoded - 4];
+    rec_checksum = rec_checksum | msg[this->msg_length_decoded - 2];
+    rec_checksum = rec_checksum << 8;
+    rec_checksum = rec_checksum | msg[this->msg_length_decoded - 1];
 
     std::cout << rec_checksum << std::endl;
 
