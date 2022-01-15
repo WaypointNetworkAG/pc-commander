@@ -42,18 +42,23 @@ void SerialConnection::update()
     }
     else
     {
+        /*
         char message[this->msg_length_decoded - 4];
         for (int i = 0; i < this->msg_length_decoded - 4; i++)
         {
             message[i] = dec_msg[i];
         }
+        */
 
-        if (strcmp(message, this->host_key) == 0)
+        String message = (char*)dec_msg;
+        message.remove(8, this->msg_length_decoded - 8);
+
+        if (message == this->host_key)
         {
             send_handshake_response();
             this->connected = true;
         }
-        else if (strcmp(message, this->heartbeat_msg) == 0)
+        else if (message == this->heartbeat_msg)
         {
             send_success_response();
         }

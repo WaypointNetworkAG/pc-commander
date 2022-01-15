@@ -282,11 +282,8 @@ void ArduinoSerial::update()
 
     std::cout << "Checksum successful" << std::endl;
 
-    char message[this->msg_length_decoded - 3];
-    for (int i = 0; i < this->msg_length_decoded - 4; i++)
-    {
-        message[i] = dec_msg[i];
-    }
+    char *message = new char[this->msg_length_decoded - 3];
+    strncpy(message, reinterpret_cast<const char *>(dec_msg), 8);
 
     std::cout << message << std::endl;
 
@@ -296,5 +293,6 @@ void ArduinoSerial::update()
         this->connected = true;
     }
 
+    delete[] message;
     delete[] dec_msg;
 }
