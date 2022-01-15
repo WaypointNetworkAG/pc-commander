@@ -65,7 +65,7 @@ private:
 
     char * __insert_initial_char(char *message) const;
 
-    const char msg_start = 38;
+    const char msg_end = 38;
     const int msg_length_encoded = 16;
     const int msg_length_decoded = 12;
 

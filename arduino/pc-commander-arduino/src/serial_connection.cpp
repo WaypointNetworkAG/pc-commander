@@ -21,30 +21,17 @@ void SerialConnection::update()
 
     char in_bytes[this->msg_length_encoded];
 
-    int idx = 0;
-    char current;
-    bool fault = false;
     while (Serial.available())
     {
-        current = Serial.read();
-        if (current == this->msg_end)
+        in_bytes[0] = Serial.read();
+        if (in_bytes[0] == this->msg_end)
         {
             break;
         }
-        else if (idx < this->msg_length_encoded)
-        {
-            in_bytes[idx] = current;
-        }
-        else
-        {
-            fault = true;
-        }
     }
-
-    if (fault)
+    for (int n = 0; n < this->msg_length_encoded; n++)
     {
-        send_success_response();
-        return;
+        in_bytes[n] = Serial.read();
     }
 
     unsigned char *dec_msg = decode(in_bytes);
