@@ -21,17 +21,30 @@ void SerialConnection::update()
 
     char in_bytes[this->msg_length_encoded];
 
+    int idx = 0;
+    char current;
+    bool fault = false;
     while (Serial.available())
     {
-        in_bytes[0] = Serial.read();
-        if (in_bytes[0] == this->msg_start)
+        current = Serial.read();
+        if (current == this->msg_end)
         {
             break;
         }
+        else if (idx < this->msg_length_encoded)
+        {
+            in_bytes[idx] = current;
+        }
+        else
+        {
+            fault = true;
+        }
     }
-    for (int n = 0; n < this->msg_length_encoded; n++)
+
+    if (fault)
     {
-        in_bytes[n] = Serial.read();
+        send_error_response();
+        return;
     }
 
     unsigned char *dec_msg = decode(in_bytes);
@@ -42,27 +55,23 @@ void SerialConnection::update()
     }
     else
     {
-        send_success_response();
+        char message[this->msg_length_decoded - 4];
+        for (int i = 0; i < this->msg_length_decoded - 4; i++)
+        {
+            message[i] = dec_msg[i];
+        }
+
+        if (strcmp(message, this->host_key) == 0)
+        {
+            send_handshake_response();
+            this->connected = true;
+        }
+        else if (strcmp(message, this->heartbeat_msg) == 0)
+        {
+            send_success_response();
+        }
     }
     
-    /*
-    char message[this->msg_length_decoded - 4];
-    for (int i = 0; i < this->msg_length_decoded - 4; i++)
-    {
-        message[i] = dec_msg[i];
-    }
-
-    if (strcmp(message, this->host_key) == 0)
-    {
-        send_handshake_response();
-        this->connected = true;
-    } 
-    else if (strcmp(message, this->heartbeat_msg) == 0)
-    {
-        send_success_response();
-    }
-    */
-
     delete[] dec_msg;
 }
 
@@ -95,7 +104,7 @@ char *SerialConnection::encode(char *data)
     Base64.encode(encodedString, message_data, this->msg_length_decoded);
 
     String strmsg = encodedString;
-    strmsg += '&';
+    strmsg += this->msg_end;
 
     char *ret = new char[this->msg_length_decoded + 1];
     strcpy((char *)ret, strmsg.c_str());

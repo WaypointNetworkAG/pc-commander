@@ -7,6 +7,8 @@ void SerialConnection::send_handshake_response()
     char *enc_message = encode(message);
 
     Serial.write(enc_message, this->msg_length_encoded + 1);
+
+    delete[] enc_message;
 }
 
 void SerialConnection::send_success_response()
@@ -16,6 +18,8 @@ void SerialConnection::send_success_response()
     char *enc_message = encode(message);
 
     Serial.write(enc_message, this->msg_length_encoded + 1);
+
+    delete[] enc_message;
 }
 
 void SerialConnection::send_error_response()
@@ -25,6 +29,8 @@ void SerialConnection::send_error_response()
     char *enc_message = encode(message);
 
     Serial.write(enc_message, this->msg_length_encoded + 1);
+
+    delete[] enc_message;
 }
 
 void SerialConnection::send_button_message(char button_char)
@@ -34,4 +40,6 @@ void SerialConnection::send_button_message(char button_char)
     char *enc_message = encode(message);
 
     Serial.write(enc_message, this->msg_length_encoded + 1);
+
+    delete[] enc_message;
 }

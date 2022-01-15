@@ -144,12 +144,12 @@ char *ArduinoSerial::encode(char *data, char* ret) const
     message_data[this->msg_length_decoded - 2] = ((uint32_t)checksum >> 16) & 0xFF;
     message_data[this->msg_length_decoded - 1] = ((uint32_t)checksum >> 24) & 0xFF;
 
-    std::cout << "MESSAGE:" << std::endl;
-    std::cout << message_data << std::endl;
-
     std::string result;
     base64::encode(result, message_data, this->msg_length_decoded);
-    result.insert(0, 1, '&');
+    result += '&';
+    //result.insert(0, 1, '&');
+
+    std::cout << result << std::endl;
 
     strcpy((char *)ret, result.c_str());
 
@@ -266,50 +266,13 @@ void ArduinoSerial::update()
         return;
     }
 
-    std::cout << "Serial response!" << std::endl;
-
     char* in_bytes = new char[this->msg_length_encoded];
 
     serial->readString(in_bytes, this->msg_start, 17);
 
-    /*
-    char in_bytes[this->msg_length_encoded];
-
-    while (serial->available())
-    {
-        char* test;
-        serial->readChar(test, 0);
-        if (*test == this->msg_start)
-        {
-            break;
-        }
-    }
-
-    if (serial->available() != this->msg_length_encoded) { return; }
-
-    for (int n = 0; n < this->msg_length_encoded; n++)
-    {
-        serial->readChar(reinterpret_cast<char *>(in_bytes[n]), 0);
-    }
-     */
-
     in_bytes[strlen(in_bytes) - 1] = '\0';
 
-    std::cout << in_bytes << std::endl;
-    /*
-    std::string test(in_bytes, 16);
-
-    std::string ret = base64_decode(test);
-    */
-    //std::vector<std::uint8_t> ret = base64::decode(in_bytes, strlen(in_bytes));
-
-    //char* dec_string = new char[this->msg_length_decoded];
-
-    //std::copy(ret.begin(), ret.end(),dec_string);
-
     unsigned char* dec_msg = decode(in_bytes);
-
-    std::cout << dec_msg << std::endl;
 
     if (!verify_checksum(dec_msg))
     {
@@ -319,8 +282,7 @@ void ArduinoSerial::update()
 
     std::cout << "Checksum successful" << std::endl;
 
-    /*
-    char message[this->msg_length_decoded - 4];
+    char message[this->msg_length_decoded - 3];
     for (int i = 0; i < this->msg_length_decoded - 4; i++)
     {
         message[i] = dec_msg[i];
@@ -330,7 +292,6 @@ void ArduinoSerial::update()
     {
         this->connected = true;
     }
-    */
 
     delete[] dec_msg;
 }
