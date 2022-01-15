@@ -311,7 +311,9 @@ void ArduinoSerial::update()
 
     //std::copy(ret.begin(), ret.end(),dec_string);
 
-    char* dec_msg = decode(in_bytes);
+    char *decbuf = new char[this->msg_length_decoded + 1];
+
+    char* dec_msg = decode(in_bytes, decbuf);
 
     std::cout << dec_msg << std::endl;
 
@@ -335,4 +337,6 @@ void ArduinoSerial::update()
         this->connected = true;
     }
     */
+
+    delete[] decbuf;
 }
