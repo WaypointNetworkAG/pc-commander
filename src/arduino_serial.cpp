@@ -147,7 +147,6 @@ char *ArduinoSerial::encode(char *data, char* ret) const
     std::string result;
     base64::encode(result, message_data, this->msg_length_decoded);
     result += '&';
-    //result.insert(0, 1, '&');
 
     std::cout << result << std::endl;
 
@@ -290,6 +289,7 @@ void ArduinoSerial::update()
 
     if (strcmp(message, this->device_key) == 0)
     {
+        std::cout << "Connection successful" << std::endl;
         this->connected = true;
     }
 
