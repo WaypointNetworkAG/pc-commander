@@ -287,6 +287,8 @@ void ArduinoSerial::update()
         message[i] = dec_msg[i];
     }
 
+    std::cout << message << std::endl;
+
     if (strcmp(message, this->device_key) == 0)
     {
         std::cout << "Connection successful" << std::endl;
