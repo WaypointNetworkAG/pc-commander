@@ -284,6 +284,7 @@ void ArduinoSerial::update()
 
     char *message = new char[this->msg_length_decoded - 3];
     strncpy(message, reinterpret_cast<const char *>(dec_msg), 8);
+    message[8] = '\0';
 
     std::cout << message << std::endl;
 
