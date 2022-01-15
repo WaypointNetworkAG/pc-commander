@@ -94,13 +94,11 @@ char *SerialConnection::encode(char *data)
     char encodedString[encodedLength];
     Base64.encode(encodedString, message_data, this->msg_length_decoded);
 
-    char *ret = new char[this->msg_length_encoded + 2];
+    String strmsg = encodedString;
+    strmsg += '&';
 
-    ret[0] = this->msg_start;
-    for (int i = 0; i < strlen(encodedString); i++)
-    {
-        ret[i + 1] = encodedString[i];
-    }
+    char *ret = new char[this->msg_length_decoded + 1];
+    strcpy((char *)ret, strmsg.c_str());
 
     return ret;
 }
