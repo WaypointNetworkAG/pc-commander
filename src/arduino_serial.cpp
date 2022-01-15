@@ -144,6 +144,9 @@ char *ArduinoSerial::encode(char *data, char* ret) const
     message_data[this->msg_length_decoded - 2] = ((uint32_t)checksum >> 16) & 0xFF;
     message_data[this->msg_length_decoded - 1] = ((uint32_t)checksum >> 24) & 0xFF;
 
+    std::cout << "MESSAGE:" << std::endl;
+    std::cout << message_data << std::endl;
+
     std::string result;
     base64::encode(result, message_data, this->msg_length_decoded);
     result.insert(0, 1, '&');

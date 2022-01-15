@@ -33,9 +33,9 @@ void SerialConnection::update()
         in_bytes[n] = Serial.read();
     }
 
-    char dec_string[this->msg_length_decoded];
-    char *dec_msg = decode(in_bytes, dec_string);
-    
+    char *decbuf = new char[this->msg_length_decoded + 1];
+    char *dec_msg = decode(in_bytes, decbuf);
+
     if (!verify_checksum(dec_msg))
     {
         send_error_response();
@@ -57,6 +57,8 @@ void SerialConnection::update()
     {
         send_success_response();
     }
+
+    delete[] decbuf;
 }
 
 char *SerialConnection::decode(char *data, char *ret)
