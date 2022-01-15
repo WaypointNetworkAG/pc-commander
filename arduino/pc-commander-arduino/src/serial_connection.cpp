@@ -43,7 +43,7 @@ void SerialConnection::update()
 
     if (fault)
     {
-        send_error_response();
+        send_success_response();
         return;
     }
 
@@ -71,7 +71,7 @@ void SerialConnection::update()
             send_success_response();
         }
     }
-    
+
     delete[] dec_msg;
 }
 

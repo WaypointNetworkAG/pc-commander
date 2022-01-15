@@ -104,12 +104,11 @@ ArduinoSerial::ArduinoSerial()
 
 void ArduinoSerial::device_handshake()
 {
-    char *retbuf = new char[this->msg_length_encoded + 2];
-    char *message = encode(const_cast<char *>(this->host_key), retbuf);
+    char *message = encode(const_cast<char *>(this->host_key));
 
     this->serial->writeString(message);
 
-    delete[] retbuf;
+    delete[] message;
 
     while (!this->connected.load() && this->try_update.load())
     {
@@ -128,7 +127,7 @@ char * ArduinoSerial::__insert_initial_char(char *message) const
     return ret;
 }
 
-char *ArduinoSerial::encode(char *data, char* ret) const
+char *ArduinoSerial::encode(char *data)
 {
     uint32_t checksum = CRC::Calculate(data, this->msg_length_decoded - 4, CRC::CRC_32());
 
@@ -150,6 +149,7 @@ char *ArduinoSerial::encode(char *data, char* ret) const
 
     std::cout << result << std::endl;
 
+    char *ret = new char[this->msg_length_encoded + 2];
     strcpy((char *)ret, result.c_str());
 
     return ret;

@@ -60,7 +60,7 @@ private:
     void device_handshake();
 
     unsigned char *decode(char *data);
-    char *encode(char *data, char* ret) const;
+    char *encode(char *data);
     bool verify_checksum(unsigned char *msg);
 
     char * __insert_initial_char(char *message) const;
