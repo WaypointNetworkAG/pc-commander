@@ -3,6 +3,11 @@
 #include <iostream>
 #include <csignal>
 #include <thread>
+#include <csignal>
+#include <stdlib.h>
+#include <cstdio>
+#include <unistd.h>
+
 #include "arduino_serial.h"
 
 std::atomic<bool> interrupt{true};
