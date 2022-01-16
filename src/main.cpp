@@ -48,6 +48,7 @@ int main(int argc, const char* argv[])
     if (arduino_serial->g_status != STATUS_SUCCESS)
     {
         //TODO: Retry connection!
+        return 0;
     }
 
     std::thread heartbeat_thread = std::thread(hearbeat_sender);
