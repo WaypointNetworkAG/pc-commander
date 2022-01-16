@@ -4,6 +4,10 @@
 
 #include "windows_actions.h"
 
+#include <cstdio>
+#include <iostream>
+#include <ostream>
+
 void WindowsActions::shutdown()
 {
     HANDLE hToken;
