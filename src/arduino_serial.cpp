@@ -44,7 +44,7 @@ ArduinoSerial::ArduinoSerial()
                 GXDQThread.join();
             }
         }
-        this->serial->closeDevice();
+        //this->serial->closeDevice();
     }
 
     if (this->connection_status.load() != STATUS_INITIALIZED)
