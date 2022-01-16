@@ -28,7 +28,11 @@ void setup()
   button4 = new Button(serial_connection, g_status_flag, CONTROLLINO_A3, '4');
   shutdown = new Button(serial_connection, g_status_flag, CONTROLLINO_IN0, 'P');
 
-  wdt_enable(WDTO_8S);
+  cli();
+  wdt_reset();
+  WDTCSR |= (1 << WDCE) | (1 << WDE);
+  WDTCSR = (0 << WDIE) | (1 << WDE) | (1 << WDP3) | (0 << WDP2) | (0 << WDP1) | (1 << WDP0);
+  sei();
 }
 
 void loop()
