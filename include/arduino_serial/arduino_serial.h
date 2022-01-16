@@ -66,7 +66,7 @@ private:
     const char *button_2      = "2-------";
     const char *button_3      = "3-------";
     const char *button_4      = "4-------";
-    const char *button_S      = "S-------";
+    const char *button_S      = "P-------";
 
     std::atomic<bool> try_update{false};
 };
