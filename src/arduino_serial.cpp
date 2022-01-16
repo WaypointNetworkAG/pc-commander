@@ -32,6 +32,7 @@ ArduinoSerial::ArduinoSerial()
             GXDQThread = std::thread(&ArduinoSerial::device_handshake, this);
             std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
+            std::cout << "Device open" << std::endl;
             this->try_update = false;
             if (this->connection_status.load() == STATUS_INITIALIZED)
             {
@@ -68,6 +69,7 @@ void ArduinoSerial::device_handshake()
     char *message = encode(const_cast<char *>(this->host_key));
 
     this->serial->writeString(message);
+    std::cout << "Message sent!" << std::endl;
 
     delete[] message;
 
