@@ -12,7 +12,7 @@ bool send_ack = false;
 
 bool ArduinoSerial::update()
 {
-    if (!serial->isDeviceOpen()) { return false; }
+    //if (!serial->isDeviceOpen()) { return false; }
     if (serial->available() > 0) { this->receive_block = true; }
     if (serial->available() <= this->msg_length_encoded) { return true; }
 
