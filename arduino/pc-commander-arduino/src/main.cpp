@@ -16,12 +16,13 @@ Button *shutdown;
 
 void setup()
 {
+  pinMode(CONTROLLINO_D0, INPUT);
   serial_connection = std::make_shared<SerialConnection>();
   button1 = new Button(serial_connection, g_status_flag, CONTROLLINO_A0, '1');
   button2 = new Button(serial_connection, g_status_flag, CONTROLLINO_A1, '2');
   button3 = new Button(serial_connection, g_status_flag, CONTROLLINO_A2, '3');
   button4 = new Button(serial_connection, g_status_flag, CONTROLLINO_A3, '4');
-  shutdown = new Button(serial_connection, g_status_flag, CONTROLLINO_A4, 'P');
+  shutdown = new Button(serial_connection, g_status_flag, CONTROLLINO_IN0, 'P');
 
   wdt_enable(WDTO_8S);
 }

@@ -22,8 +22,6 @@ ArduinoSerial::ArduinoSerial()
 
     for (auto & available_com_port : this->available_com_ports)
     {
-        std::cout << available_com_port << std::endl;
-
         char errorOpening = this->serial->openDevice(available_com_port, 115200);
         if (errorOpening == 1)
         {
@@ -69,7 +67,6 @@ void ArduinoSerial::device_handshake()
     char *message = encode(const_cast<char *>(this->host_key));
 
     int ret = this->serial->writeString(message);
-    std::cout << ret << std::endl;
 
     delete[] message;
 
@@ -229,8 +226,6 @@ bool ArduinoSerial::update()
         char *message = new char[this->msg_length_decoded - 3];
         strncpy(message, reinterpret_cast<const char *>(dec_msg), 8);
         message[8] = '\0';
-
-        std::cout << message << std::endl;
 
         if (strcmp(message, this->device_key) == 0)
         {

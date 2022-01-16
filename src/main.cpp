@@ -37,16 +37,9 @@ void hearbeat_sender()
 
 int main(int argc, const char* argv[])
 {
-    /*
-    struct sigaction sigIntHandler;
-
-    sigIntHandler.sa_handler = sigint_handler;
-    sigemptyset(&sigIntHandler.sa_mask);
-    sigIntHandler.sa_flags = 0;
-
-    sigaction(SIGINT, &sigIntHandler, nullptr);
-     */
     signal (SIGINT, sigint_handler);
+
+    ::ShowWindow(::GetConsoleWindow(), SW_HIDE);
 
     while (interrupt.load())
     {
