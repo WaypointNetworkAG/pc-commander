@@ -24,7 +24,7 @@ ArduinoSerial::ArduinoSerial()
     {
         std::cout << available_com_port << std::endl;
 
-        char errorOpening = this->serial->openDevice("COM9", 115200);
+        char errorOpening = this->serial->openDevice(available_com_port, 115200);
         if (errorOpening == 1)
         {
             this->try_update = true;
