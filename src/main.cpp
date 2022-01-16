@@ -3,10 +3,7 @@
 #include <iostream>
 #include <csignal>
 #include <thread>
-#include <csignal>
-#include <stdlib.h>
 #include <cstdio>
-#include <unistd.h>
 
 #include "arduino_serial.h"
 
@@ -35,6 +32,7 @@ void hearbeat_sender()
 
 int main(int argc, const char* argv[])
 {
+    /*
     struct sigaction sigIntHandler;
 
     sigIntHandler.sa_handler = sigint_handler;
@@ -42,6 +40,8 @@ int main(int argc, const char* argv[])
     sigIntHandler.sa_flags = 0;
 
     sigaction(SIGINT, &sigIntHandler, nullptr);
+     */
+    signal (SIGINT, sigint_handler);
 
     arduino_serial = new ArduinoSerial();
 
