@@ -66,6 +66,7 @@ bool ArduinoSerial::update()
             {
                 std::cout << "Sending ACK message" << std::endl;
                 send_success_response();
+                send_ack = false;
             }
             else
             {
