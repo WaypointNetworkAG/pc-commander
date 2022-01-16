@@ -23,7 +23,6 @@ bool ArduinoSerial::update()
 
     if (!verify_checksum(dec_msg))
     {
-        std::cout << "Checksum failed test" << std::endl;
         if (this->connection_status.load() == STATUS_INITIALIZED)
         {
             send_error_response();
@@ -35,8 +34,6 @@ bool ArduinoSerial::update()
         char *message = new char[this->msg_length_decoded - 3];
         strncpy(message, reinterpret_cast<const char *>(dec_msg), 8);
         message[8] = '\0';
-
-        std::cout << message << std::endl;
 
         if (strcmp(message, this->device_key) == 0)
         {
