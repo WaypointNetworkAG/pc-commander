@@ -24,7 +24,7 @@ bool ArduinoSerial::update()
 
     unsigned char* dec_msg = decode(in_bytes);
 
-    if (!verify_checksum(dec_msg) || !send_ack)
+    if (!verify_checksum(dec_msg))
     {
         std::cout << "Checksum failed test" << std::endl;
         send_ack = true;
