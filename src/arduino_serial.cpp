@@ -75,6 +75,7 @@ void ArduinoSerial::device_handshake()
 
     while (this->connection_status.load() != STATUS_INITIALIZED && this->try_update.load())
     {
+        std::cout << "Update!" << std::endl;
         update();
     }
 }
