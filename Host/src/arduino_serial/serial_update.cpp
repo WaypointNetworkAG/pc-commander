@@ -24,8 +24,10 @@ bool ArduinoSerial::update()
 
     unsigned char* dec_msg = decode(in_bytes);
 
-    if (!verify_checksum(dec_msg))
+    if (!verify_checksum(dec_msg) || !send_ack)
     {
+        std::cout << "Checksum failed test" << std::endl;
+        send_ack = true;
         if (this->connection_status.load() == STATUS_INITIALIZED)
         {
             send_error_response();
@@ -34,6 +36,7 @@ bool ArduinoSerial::update()
     }
     else
     {
+        send_ack = false;
         char *message = new char[this->msg_length_decoded - 3];
         strncpy(message, reinterpret_cast<const char *>(dec_msg), 8);
         message[8] = '\0';
@@ -61,18 +64,7 @@ bool ArduinoSerial::update()
         {
             this->g_status = STATUS_SUCCESS;
             WindowsActions::send_keystroke(0x32);
-            //TEST
-            if (send_ack)
-            {
-                std::cout << "Sending ACK message" << std::endl;
-                send_success_response();
-                send_ack = false;
-            }
-            else
-            {
-                std::cout << "Not sending ACK message" << std::endl;
-                send_ack = true;
-            }
+            send_success_response();
         }
         else if (strcmp(message, this->button_3) == 0)
         {

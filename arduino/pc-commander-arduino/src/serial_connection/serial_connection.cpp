@@ -22,6 +22,11 @@ SerialConnection::SerialConnection()
 
 void SerialConnection::update()
 {
+    if (!Serial && this->connected)
+    {
+        this->connected = false;
+        return;
+    }
     if (Serial.available() <= this->msg_length_encoded) { return; }
 
     char in_bytes[this->msg_length_encoded];

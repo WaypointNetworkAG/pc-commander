@@ -32,7 +32,7 @@ void setup()
 }
 
 void loop()
-{ 
+{
     serial_connection->update();
     button1->update();
     button2->update();
