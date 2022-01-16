@@ -2,8 +2,8 @@
  * Desc: Arduino Serial Interface
  */
 
-#ifndef TEST_ARDUINO_SERIAL_H_
-#define TEST_ARDUINO_SERIAL_H_
+#ifndef PC_COMMANDER_ARDUINO_SERIAL_H_
+#define PC_COMMANDER_ARDUINO_SERIAL_H_
 
 #include "windows_actions.h"
 #include "serialib.h"
@@ -67,4 +67,4 @@ private:
     std::atomic<bool> try_update{false};
 };
 
-#endif //TEST_ARDUINO_SERIAL_H_
+#endif //PC_COMMANDER_ARDUINO_SERIAL_H_
