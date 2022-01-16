@@ -4,6 +4,9 @@
 
 #include "arduino_serial.h"
 
+#include <iostream>
+#include <ostream>
+
 //TEST
 bool send_ack = false;
 
