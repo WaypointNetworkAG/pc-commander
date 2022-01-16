@@ -20,7 +20,6 @@ Button *shutdown;
 
 void setup()
 {
-  pinMode(CONTROLLINO_D0, INPUT);
   serial_connection = std::make_shared<SerialConnection>();
   button1 = new Button(serial_connection, g_status_flag, CONTROLLINO_A0, '1');
   button2 = new Button(serial_connection, g_status_flag, CONTROLLINO_A1, '2');
@@ -28,21 +27,25 @@ void setup()
   button4 = new Button(serial_connection, g_status_flag, CONTROLLINO_A3, '4');
   shutdown = new Button(serial_connection, g_status_flag, CONTROLLINO_IN0, 'P');
 
+  /*
   cli();
   wdt_reset();
   WDTCSR |= (1 << WDCE) | (1 << WDE);
   WDTCSR = (0 << WDIE) | (1 << WDE) | (1 << WDP3) | (0 << WDP2) | (0 << WDP1) | (1 << WDP0);
   sei();
+  */
 }
 
 void loop()
 {
     serial_connection->update();
-    button1->update();
-    button2->update();
-    button3->update();
-    button4->update();
-    shutdown->update();
-
+    if (serial_connection->connected)
+    {
+      button1->update();
+      button2->update();
+      button3->update();
+      button4->update();
+      shutdown->update();
+    }
     delay(1);
 }

@@ -17,6 +17,7 @@ public:
 
     //volatile bool heartbeat_ack = true;
     volatile bool message_ack = true;
+    volatile bool connected = false;
 
 private:
     unsigned char *decode(char *data);
@@ -36,8 +37,6 @@ private:
     const char *success_msg   = "SUCCESS!";
     const char *error_msg     = "ERROR!--";
     const char *heartbeat_msg = "STATUS--";
-
-    bool connected = false;
 };
 
 #endif //PC_COMMANDER_ARDUINO_SERIAL_CONNECTION_

@@ -12,12 +12,6 @@ SerialConnection::SerialConnection()
     {
         delay(1);
     }
-
-    while(!this->connected)
-    {
-        update();
-        delay(1);
-    }
 }
 
 void SerialConnection::update()
@@ -66,7 +60,7 @@ void SerialConnection::update()
         }
         else if (strcmp(message, this->heartbeat_msg) == 0)
         {
-            wdt_reset();
+            //wdt_reset();
             send_success_response();
         }
         else if (strcmp(message, this->success_msg) == 0)

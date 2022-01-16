@@ -7,12 +7,9 @@
 #include <iostream>
 #include <ostream>
 
-//TEST
-bool send_ack = false;
-
 bool ArduinoSerial::update()
 {
-    //if (!serial->isDeviceOpen()) { return false; }
+    if (!serial->isDeviceOpen()) { return false; }
     if (serial->available() > 0) { this->receive_block = true; }
     if (serial->available() <= this->msg_length_encoded) { return true; }
 
@@ -27,7 +24,6 @@ bool ArduinoSerial::update()
     if (!verify_checksum(dec_msg))
     {
         std::cout << "Checksum failed test" << std::endl;
-        send_ack = true;
         if (this->connection_status.load() == STATUS_INITIALIZED)
         {
             send_error_response();
@@ -36,10 +32,11 @@ bool ArduinoSerial::update()
     }
     else
     {
-        //send_ack = false;
         char *message = new char[this->msg_length_decoded - 3];
         strncpy(message, reinterpret_cast<const char *>(dec_msg), 8);
         message[8] = '\0';
+
+        std::cout << message << std::endl;
 
         if (strcmp(message, this->device_key) == 0)
         {
