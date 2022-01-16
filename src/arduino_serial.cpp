@@ -68,8 +68,8 @@ void ArduinoSerial::device_handshake()
 {
     char *message = encode(const_cast<char *>(this->host_key));
 
-    this->serial->writeString(message);
-    std::cout << "Message sent!" << std::endl;
+    int ret = this->serial->writeString(message);
+    std::cout << ret << std::endl;
 
     delete[] message;
 
@@ -207,7 +207,6 @@ bool ArduinoSerial::get_available_COM_ports()
 void ArduinoSerial::update()
 {
     if (serial->available() <= this->msg_length_encoded) {
-        std::cout << serial->available() << std::endl;
         return;
     }
 
