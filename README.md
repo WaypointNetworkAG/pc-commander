@@ -1,2 +1,2 @@
-# pc-commander
-Arduino Windows remote shutdown
+# WPN PC Commander
+Arduino Windows remote control
