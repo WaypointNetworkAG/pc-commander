@@ -61,6 +61,7 @@ int main(int argc, const char* argv[])
         }
 
         heartbeat_thread.join();
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     }
 
     return 0;

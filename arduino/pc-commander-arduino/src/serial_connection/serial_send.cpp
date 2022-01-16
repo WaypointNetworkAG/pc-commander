@@ -55,7 +55,7 @@ void SerialConnection::send_button_message(char button_char)
 
         update();
 
-        if (this->message_ack = true)
+        if (this->message_ack)
         {
             return;
         }
