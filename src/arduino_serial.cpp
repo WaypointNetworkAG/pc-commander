@@ -1,35 +1,3 @@
-/*
- * BSD 3-Clause License
- *
- * Copyright (c) 2021, Noa Sendlhofer
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer.
- *
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- *
- * 3. Neither the name of the copyright holder nor the names of its
- *    contributors may be used to endorse or promote products derived from
- *    this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
 // Author: Noa Sendlhofer
 
 #include "arduino_serial.h"
@@ -56,7 +24,7 @@ ArduinoSerial::ArduinoSerial()
     {
         std::cout << available_com_port << std::endl;
 
-        char errorOpening = serial->openDevice(available_com_port, 115200);
+        char errorOpening = this->serial->openDevice(available_com_port, 115200);
         if (errorOpening == 1)
         {
             this->try_update = true;
@@ -65,7 +33,7 @@ ArduinoSerial::ArduinoSerial()
             std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
             this->try_update = false;
-            if (this->connected.load())
+            if (this->connection_status.load() == STATUS_INITIALIZED)
             {
                 std::cout << "Connected!" << std::endl;
                 break;
@@ -75,31 +43,24 @@ ArduinoSerial::ArduinoSerial()
                 GXDQThread.join();
             }
         }
+        this->serial->closeDevice();
     }
 
-    std::cout << "Serial Constructor done!" << std::endl;
-    /*
-    char errorOpening = serial.openDevice(SERIAL_PORT, 115200);
-    if (errorOpening!=1)
-        std::cout << "Error Opening" << std::endl;
+    if (this->connection_status.load() != STATUS_INITIALIZED)
+    {
+        this->g_status = STATUS_ERROR;
+        std::cout << "No device found!" << std::endl;
+    }
     else
     {
-        printf ("Successful connection to %s\n",SERIAL_PORT);
-
-        char* buf = new char[100];
-
-        while(true)
-        {
-            serial.readString(buf, '\n', 100);
-            std::cout << buf << std::endl;
-            if (strcmp(buf, "return\n") == 0)
-            {
-                shutdown();
-                break;
-            }
-        }
+        this->g_status = STATUS_SUCCESS;
+        std::cout << "Serial Constructor done!" << std::endl;
     }
-     */
+}
+
+ArduinoSerial::~ArduinoSerial()
+{
+    this->serial->closeDevice();
 }
 
 void ArduinoSerial::device_handshake()
@@ -110,7 +71,7 @@ void ArduinoSerial::device_handshake()
 
     delete[] message;
 
-    while (!this->connected.load() && this->try_update.load())
+    while (this->connection_status.load() != STATUS_INITIALIZED && this->try_update.load())
     {
         update();
     }
@@ -257,7 +218,10 @@ void ArduinoSerial::update()
 
     if (!verify_checksum(dec_msg))
     {
-        if (connected) { /*send_error_response();*/ }
+        if (this->connection_status.load() == STATUS_INITIALIZED)
+        {
+            send_error_response();
+        }
     }
     else
     {
@@ -267,7 +231,27 @@ void ArduinoSerial::update()
 
         if (strcmp(message, this->device_key) == 0)
         {
-            this->connected = true;
+            this->connection_status = STATUS_INITIALIZED;
+        }
+        else if (strcmp(message, this->success_msg) == 0)
+        {
+            this->g_status = STATUS_SUCCESS;
+            this->heartbeat_ack = true;
+        }
+        else if (strcmp(message, this->error_msg) == 0)
+        {
+            this->g_status = STATUS_ERROR;
+        }
+        else if (strcmp(message, this->button_a) == 0)
+        {
+            this->g_status = STATUS_SUCCESS;
+            //TODO: Send Keystroke
+            send_success_response();
+        }
+        else
+        {
+            this->g_status = STATUS_ERROR;
+            send_error_response();
         }
 
         delete[] message;

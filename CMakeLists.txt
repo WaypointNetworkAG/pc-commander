@@ -28,7 +28,7 @@ target_include_directories(
 add_library(
         arduino_serial
         src/arduino_serial.cpp
-)
+        src/serial_send.cpp)
 
 target_include_directories(
         arduino_serial
