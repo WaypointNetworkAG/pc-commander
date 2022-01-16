@@ -21,7 +21,7 @@ SerialConnection::SerialConnection()
 }
 
 void SerialConnection::update()
-{
+{ 
     if (!Serial && this->connected) { this->connected = false; }
     if (Serial.available() <= this->msg_length_encoded) { return; }
 
@@ -52,13 +52,10 @@ void SerialConnection::update()
         strncpy(message, reinterpret_cast<const char *>(dec_msg), 8);
         message[8] = '\0';
 
-        if (!this->connected)
+        if (strcmp(message, this->host_key) == 0)
         {
-            if (strcmp(message, this->host_key) == 0)
-            {
-                send_handshake_response();
-                this->connected = true;
-            }
+            send_handshake_response();
+            this->connected = true;
         }
         else if (strcmp(message, this->heartbeat_msg) == 0)
         {
