@@ -32,11 +32,9 @@ ArduinoSerial::ArduinoSerial()
             GXDQThread = std::thread(&ArduinoSerial::device_handshake, this);
             std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
-            std::cout << "Device open" << std::endl;
             this->try_update = false;
             if (this->connection_status.load() == STATUS_INITIALIZED)
             {
-                std::cout << "Connected!" << std::endl;
                 GXDQThread.join();
                 break;
             }
@@ -45,7 +43,7 @@ ArduinoSerial::ArduinoSerial()
                 GXDQThread.join();
             }
         }
-        //this->serial->closeDevice();
+        this->serial->closeDevice();
     }
 
     if (this->connection_status.load() != STATUS_INITIALIZED)
@@ -78,7 +76,6 @@ void ArduinoSerial::device_handshake()
     {
         update();
     }
-    std::cout << "Thread done" << std::endl;
 }
 
 char *ArduinoSerial::encode(char *data)
@@ -97,7 +94,6 @@ char *ArduinoSerial::encode(char *data)
 
     std::string result;
     base64::encode(result, message_data, this->msg_length_decoded);
-    //result += '&';
     result.insert(0, 1, this->msg_end);
 
     char *ret = new char[this->msg_length_encoded + 2];
@@ -211,8 +207,6 @@ void ArduinoSerial::update()
     if (serial->available() <= this->msg_length_encoded) {
         return;
     }
-
-    std::cout << "Response!" << std::endl;
 
     char* in_bytes = new char[this->msg_length_encoded];
 

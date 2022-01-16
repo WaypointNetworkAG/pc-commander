@@ -25,9 +25,11 @@ void hearbeat_sender()
             std::cout << "Heartbeat failed!" << std::endl;
             //TODO: Reload program - retry connection!
         }
+        arduino_serial->heartbeat_ack = false;
         arduino_serial->send_heartbeat_message();
         std::cout << "Heartbeat success!" << std::endl;
     }
+    std::cout << "Exit heartbeat thread" << std::endl;
 }
 
 int main(int argc, const char* argv[])
@@ -57,6 +59,8 @@ int main(int argc, const char* argv[])
     {
         arduino_serial->update();
     }
+
+    std::cout << "Exit main thread" << std::endl;
 
     return 0;
 }
