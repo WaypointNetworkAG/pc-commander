@@ -39,7 +39,7 @@ int main(int argc, const char* argv[])
 {
     signal (SIGINT, sigint_handler);
 
-    ::ShowWindow(::GetConsoleWindow(), SW_HIDE);
+    ::ShowWindow(::GetConsoleWindow(), SW_MINIMIZE);
 
     while (interrupt.load())
     {
