@@ -17,7 +17,7 @@ public:
 
     //volatile bool heartbeat_ack = true;
     volatile bool message_ack = true;
-    volatile bool connected = false;
+    bool connected = false;
 
 private:
     unsigned char *decode(char *data);

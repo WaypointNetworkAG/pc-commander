@@ -12,15 +12,17 @@ SerialConnection::SerialConnection()
     {
         delay(1);
     }
+
+    while (!this->connected)
+    {
+        update();
+        delay(1);
+    }
 }
 
 void SerialConnection::update()
 {
-    if (!Serial && this->connected)
-    {
-        this->connected = false;
-        return;
-    }
+    if (!Serial && this->connected) { this->connected = false; }
     if (Serial.available() <= this->msg_length_encoded) { return; }
 
     char in_bytes[this->msg_length_encoded];
@@ -60,7 +62,7 @@ void SerialConnection::update()
         }
         else if (strcmp(message, this->heartbeat_msg) == 0)
         {
-            //wdt_reset();
+            wdt_reset();
             send_success_response();
         }
         else if (strcmp(message, this->success_msg) == 0)
@@ -91,12 +93,12 @@ char *SerialConnection::encode(char *data)
     {
         message_data[i] = data[i];
     }
-    
+
     message_data[this->msg_length_decoded - 4] = ((uint32_t)checksum >> 0) & 0xFF;
     message_data[this->msg_length_decoded - 3] = ((uint32_t)checksum >> 8) & 0xFF;
     message_data[this->msg_length_decoded - 2] = ((uint32_t)checksum >> 16) & 0xFF;
     message_data[this->msg_length_decoded - 1] = ((uint32_t)checksum >> 24) & 0xFF;
-    
+
     int encodedLength = Base64.encodedLength(this->msg_length_decoded);
     char encodedString[encodedLength];
     Base64.encode(encodedString, message_data, this->msg_length_decoded);
