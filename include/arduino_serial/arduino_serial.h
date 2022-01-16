@@ -36,8 +36,6 @@ public:
     std::atomic<GLOBAL_STATUS_DEF> connection_status{STATUS_IDLE};
     std::atomic<bool> heartbeat_ack{false};
 
-    std::atomic<bool> status{false};
-
 private:
     serialib *serial;
 
