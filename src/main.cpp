@@ -30,7 +30,7 @@ void hearbeat_sender()
 
 int main(int argc, const char* argv[])
 {
-    struct sigaction sigIntHandler{};
+    struct sigaction sigIntHandler;
 
     sigIntHandler.sa_handler = sigint_handler;
     sigemptyset(&sigIntHandler.sa_mask);
