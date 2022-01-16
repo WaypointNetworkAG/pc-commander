@@ -269,10 +269,10 @@ void ArduinoSerial::test_send_keypress()
     ZeroMemory(inputs, sizeof(inputs));
 
     inputs[0].type = INPUT_KEYBOARD;
-    inputs[0].ki.wVk = VK_D;
+    inputs[0].ki.wVk = 0x44;
 
     inputs[1].type = INPUT_KEYBOARD;
-    inputs[1].ki.wVk = VK_D;
+    inputs[1].ki.wVk = 0x44;
     inputs[1].ki.dwFlags = KEYEVENTF_KEYUP;
 
     UINT uSent = SendInput(ARRAYSIZE(inputs), inputs, sizeof(INPUT));
