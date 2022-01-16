@@ -34,7 +34,7 @@ ArduinoSerial::ArduinoSerial()
 
             std::cout << "Device open" << std::endl;
             this->try_update = false;
-            if (this->connection_status.load() == STATUS_INITIALIZED)
+            if (this->status.load())
             {
                 std::cout << "Connected!" << std::endl;
                 break;
@@ -236,6 +236,7 @@ void ArduinoSerial::update()
         if (strcmp(message, this->device_key) == 0)
         {
             this->connection_status = STATUS_INITIALIZED;
+            this->status = true;
         }
         else if (strcmp(message, this->success_msg) == 0)
         {
