@@ -10,24 +10,23 @@
 #define HEARTBEAT_RATE 5000
 
 std::atomic<bool> interrupt{true};
-std::atomic<bool> heartbeat{true};
 ArduinoSerial *arduino_serial;
 
 void sigint_handler(int s){
     printf("Caught signal %d\n",s);
     interrupt = false;
-    heartbeat = false;
 }
 
 void hearbeat_sender()
 {
-    while(heartbeat.load())
+    while(interrupt.load() && arduino_serial->connection_status == STATUS_SUCCESS)
     {
         std::this_thread::sleep_for(std::chrono::milliseconds(HEARTBEAT_RATE));
         if (!arduino_serial->heartbeat_ack.load())
         {
             std::cout << "Heartbeat failed!" << std::endl;
-            //TODO: Reload program - retry connection!
+            arduino_serial->connection_status = STATUS_ERROR;
+            break;
         }
         arduino_serial->heartbeat_ack = false;
         arduino_serial->send_heartbeat_message();
@@ -55,14 +54,13 @@ int main(int argc, const char* argv[])
 
         if (arduino_serial->g_status != STATUS_SUCCESS) { continue; }
 
-        heartbeat = true;
         std::thread heartbeat_thread = std::thread(hearbeat_sender);
 
-        while (interrupt.load())
+        while (interrupt.load() && arduino_serial->connection_status == STATUS_SUCCESS)
         {
             if (!arduino_serial->update())
             {
-                heartbeat = false;
+                arduino_serial->connection_status = STATUS_ERROR;
                 break;
             }
         }
