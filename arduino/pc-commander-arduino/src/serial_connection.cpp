@@ -46,12 +46,12 @@ void SerialConnection::update()
         strncpy(message, reinterpret_cast<const char *>(dec_msg), 8);
         message[8] = '\0';
 
-        if (message == this->host_key)
+        if (strcmp(message, this->host_key) == 0)
         {
             send_handshake_response();
             this->connected = true;
         }
-        else if (message == this->heartbeat_msg)
+        else if (strcmp(message, this->heartbeat_msg) == 0)
         {
             send_success_response();
         }

@@ -37,6 +37,7 @@ ArduinoSerial::ArduinoSerial()
             if (this->connection_status.load() == STATUS_INITIALIZED)
             {
                 std::cout << "Connected!" << std::endl;
+                GXDQThread.join();
                 break;
             }
             else
@@ -77,6 +78,7 @@ void ArduinoSerial::device_handshake()
     {
         update();
     }
+    std::cout << "Thread done" << std::endl;
 }
 
 char *ArduinoSerial::encode(char *data)
