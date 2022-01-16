@@ -45,11 +45,11 @@ target_link_libraries(
         base64
 )
 
-add_executable(main
+add_executable(PCCommander
         src/main.cpp)
 
 target_link_libraries(
-        main
+        PCCommander
         PUBLIC
         arduino_serial
 )
