@@ -46,7 +46,7 @@ private:
     void send_error_response();
     void send_success_response();
 
-    void test_send_keypress();
+    void send_keystroke(char key);
 
     unsigned char *decode(char *data) const;
     char *encode(char *data);
@@ -62,7 +62,11 @@ private:
     const char *error_msg     = "ERROR!--";
     const char *heartbeat_msg = "STATUS--";
 
-    const char *button_a      = "1-------";
+    const char *button_1      = "1-------";
+    const char *button_2      = "2-------";
+    const char *button_3      = "3-------";
+    const char *button_4      = "4-------";
+    const char *button_S      = "S-------";
 
     std::atomic<bool> try_update{false};
 };

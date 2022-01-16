@@ -243,10 +243,34 @@ bool ArduinoSerial::update()
         {
             this->g_status = STATUS_ERROR;
         }
-        else if (strcmp(message, this->button_a) == 0)
+        else if (strcmp(message, this->button_1) == 0)
         {
             this->g_status = STATUS_SUCCESS;
-            test_send_keypress();
+            send_keystroke(0x31);
+            send_success_response();
+        }
+        else if (strcmp(message, this->button_2) == 0)
+        {
+            this->g_status = STATUS_SUCCESS;
+            send_keystroke(0x32);
+            send_success_response();
+        }
+        else if (strcmp(message, this->button_3) == 0)
+        {
+            this->g_status = STATUS_SUCCESS;
+            send_keystroke(0x33);
+            send_success_response();
+        }
+        else if (strcmp(message, this->button_4) == 0)
+        {
+            this->g_status = STATUS_SUCCESS;
+            send_keystroke(0x34);
+            send_success_response();
+        }
+        else if (strcmp(message, this->button_S) == 0)
+        {
+            this->g_status = STATUS_SUCCESS;
+            shutdown();
             send_success_response();
         }
         else
@@ -263,17 +287,17 @@ bool ArduinoSerial::update()
     return true;
 }
 
-void ArduinoSerial::test_send_keypress()
+void ArduinoSerial::send_keystroke(char key)
 {
     std::cout << "Send keypress!" << std::endl;
     INPUT inputs[2] = {};
     ZeroMemory(inputs, sizeof(inputs));
 
     inputs[0].type = INPUT_KEYBOARD;
-    inputs[0].ki.wVk = 0x31;
+    inputs[0].ki.wVk = key;
 
     inputs[1].type = INPUT_KEYBOARD;
-    inputs[1].ki.wVk = 0x31;
+    inputs[1].ki.wVk = key;
     inputs[1].ki.dwFlags = KEYEVENTF_KEYUP;
 
     UINT uSent = SendInput(ARRAYSIZE(inputs), inputs, sizeof(INPUT));
