@@ -1,3 +1,7 @@
+/* Author: Noa Sendlhofer - noa.sendlhofer@wpn.ch
+ * Desc: Serial connection protocol usign Base64 and CRC32
+ */
+
 #include "serial_connection/serial_connection.h"
 
 void SerialConnection::send_handshake_response()

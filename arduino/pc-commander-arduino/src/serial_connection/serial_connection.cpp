@@ -1,3 +1,7 @@
+/* Author: Noa Sendlhofer - noa.sendlhofer@wpn.ch
+ * Desc: Serial connection protocol usign Base64 and CRC32
+ */
+
 #include <avr/wdt.h>
 #include "serial_connection/serial_connection.h"
 
@@ -47,10 +51,13 @@ void SerialConnection::update()
         strncpy(message, reinterpret_cast<const char *>(dec_msg), 8);
         message[8] = '\0';
 
-        if (strcmp(message, this->host_key) == 0)
+        if (!this->connected)
         {
-            send_handshake_response();
-            this->connected = true;
+            if (strcmp(message, this->host_key) == 0)
+            {
+                send_handshake_response();
+                this->connected = true;
+            }
         }
         else if (strcmp(message, this->heartbeat_msg) == 0)
         {

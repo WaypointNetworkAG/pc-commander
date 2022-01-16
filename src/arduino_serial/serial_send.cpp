@@ -1,4 +1,6 @@
-// Author: Noa Sendlhofer
+/* Author: Noa Sendlhofer - noa.sendlhofer@wpn.ch
+ * Desc: Send serial messages
+ */
 
 #include "arduino_serial.h"
 

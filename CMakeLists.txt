@@ -15,20 +15,13 @@ target_include_directories(
 )
 
 add_library(
-        base64
-        src/base64/base64.cpp
-)
-
-target_include_directories(
-        base64
-        PUBLIC
-        include/base64
-)
-
-add_library(
         arduino_serial
-        src/arduino_serial.cpp
-        src/serial_send.cpp)
+        src/arduino_serial/arduino_serial.cpp
+        src/arduino_serial/serial_send.cpp
+        src/arduino_serial/serial_base64.cpp
+        src/arduino_serial/serial_crc.cpp
+        src/windows_actions/windows_actions.cpp
+        src/arduino_serial/serial_update.cpp)
 
 target_include_directories(
         arduino_serial
@@ -37,12 +30,12 @@ target_include_directories(
         include/crc
         include/cppcodec
         include/base64
+        include/windows_actions
 )
 
 target_link_libraries(
         arduino_serial
         serial
-        base64
 )
 
 add_executable(PCCommander

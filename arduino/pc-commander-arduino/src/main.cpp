@@ -1,3 +1,7 @@
+/* Author: Noa Sendlhofer - noa.sendlhofer@wpn.ch
+ * Desc: PCCommander Arduino main
+ */
+
 #include <Controllino.h>
 #include <avr/wdt.h>
 #include <ArxSmartPtr.h>

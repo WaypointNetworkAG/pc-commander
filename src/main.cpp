@@ -1,4 +1,6 @@
-// Author: Noa Sendlhofer
+/* Author: Noa Sendlhofer - noa.sendlhofer@wpn.ch
+ * Desc: PCCommander main
+ */
 
 #include <iostream>
 #include <csignal>
@@ -60,8 +62,6 @@ int main(int argc, const char* argv[])
 
         heartbeat_thread.join();
     }
-
-    std::cout << "Exit main thread" << std::endl;
 
     return 0;
 }

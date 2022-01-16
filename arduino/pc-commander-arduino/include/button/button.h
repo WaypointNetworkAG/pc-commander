@@ -2,8 +2,8 @@
  * Desc: Button class header
  */
 
-#ifndef PC_COMMANDER_BUTTON_
-#define PC_COMMANDER_BUTTON_
+#ifndef PC_COMMANDER_ARDUINO_BUTTON_
+#define PC_COMMANDER_ARDUINO_BUTTON_
 
 #include "serial_connection/serial_connection.h"
 #include <ArxSmartPtr.h>
@@ -26,4 +26,4 @@ private:
     bool *g_status_flag;
 };
 
-#endif //PC_COMMANDER_BUTTON_
+#endif //PC_COMMANDER_ARDUINO_BUTTON_

@@ -1,10 +1,12 @@
-// Author: Noa Sendlhofer
+/* Author: Noa Sendlhofer - noa.sendlhofer@wpn.ch
+ * Desc: Arduino Serial Interface
+ */
 
 #ifndef TEST_ARDUINO_SERIAL_H_
 #define TEST_ARDUINO_SERIAL_H_
 
+#include "windows_actions.h"
 #include "serialib.h"
-#include <windows.h>
 #include <vector>
 #include <base64_rfc4648.hpp>
 #include <CRC.h>
@@ -22,12 +24,11 @@ typedef enum GLOBAL_STATUS_DEF
 
 } GLOBAL_STATUS;
 
-class ArduinoSerial
+class ArduinoSerial : public WindowsActions
 {
 public:
     ArduinoSerial();
     ~ArduinoSerial();
-    void shutdown();
     bool update();
 
     void send_heartbeat_message();
@@ -39,14 +40,9 @@ public:
 private:
     serialib *serial;
 
-    bool get_available_COM_ports();
-    std::vector<char*> available_com_ports;
-
     void device_handshake();
     void send_error_response();
     void send_success_response();
-
-    void send_keystroke(char key);
 
     unsigned char *decode(char *data) const;
     char *encode(char *data);

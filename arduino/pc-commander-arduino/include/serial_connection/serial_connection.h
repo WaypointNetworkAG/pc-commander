@@ -1,3 +1,7 @@
+/* Author: Noa Sendlhofer - noa.sendlhofer@wpn.ch
+ * Desc: Serial connection class header
+ */
+
 #ifndef PC_COMMANDER_ARDUINO_SERIAL_CONNECTION_
 #define PC_COMMANDER_ARDUINO_SERIAL_CONNECTION_
 
