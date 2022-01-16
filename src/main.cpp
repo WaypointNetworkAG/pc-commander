@@ -19,7 +19,7 @@ void sigint_handler(int s){
 
 void hearbeat_sender()
 {
-    while(interrupt.load() && arduino_serial->connection_status == STATUS_SUCCESS)
+    while(interrupt.load() && arduino_serial->connection_status == STATUS_INITIALIZED)
     {
         std::this_thread::sleep_for(std::chrono::milliseconds(HEARTBEAT_RATE));
         if (!arduino_serial->heartbeat_ack.load())
@@ -56,7 +56,7 @@ int main(int argc, const char* argv[])
 
         std::thread heartbeat_thread = std::thread(hearbeat_sender);
 
-        while (interrupt.load() && arduino_serial->connection_status == STATUS_SUCCESS)
+        while (interrupt.load() && arduino_serial->connection_status == STATUS_INITIALIZED)
         {
             if (!arduino_serial->update())
             {
