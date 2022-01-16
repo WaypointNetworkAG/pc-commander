@@ -46,6 +46,8 @@ private:
     void send_error_response();
     void send_success_response();
 
+    void test_send_keypress();
+
     unsigned char *decode(char *data) const;
     char *encode(char *data);
     bool verify_checksum(unsigned char *msg) const;

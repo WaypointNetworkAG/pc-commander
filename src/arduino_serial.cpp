@@ -221,6 +221,7 @@ void ArduinoSerial::update()
         if (this->connection_status.load() == STATUS_INITIALIZED)
         {
             send_error_response();
+            this->g_status = STATUS_ERROR;
         }
     }
     else
@@ -237,6 +238,7 @@ void ArduinoSerial::update()
         {
             this->g_status = STATUS_SUCCESS;
             this->heartbeat_ack = true;
+            test_send_keypress();
         }
         else if (strcmp(message, this->error_msg) == 0)
         {
@@ -258,4 +260,24 @@ void ArduinoSerial::update()
     }
 
     delete[] dec_msg;
+}
+
+void ArduinoSerial::test_send_keypress()
+{
+    std::cout << "Send keypress!" << std::endl;
+    INPUT inputs[2] = {};
+    ZeroMemory(inputs, sizeof(inputs));
+
+    inputs[0].type = INPUT_KEYBOARD;
+    inputs[0].ki.wVk = VK_D;
+
+    inputs[1].type = INPUT_KEYBOARD;
+    inputs[1].ki.wVk = VK_D;
+    inputs[1].ki.dwFlags = KEYEVENTF_KEYUP;
+
+    UINT uSent = SendInput(ARRAYSIZE(inputs), inputs, sizeof(INPUT));
+    if (uSent != ARRAYSIZE(inputs))
+    {
+        std::cout << "Keypress failed!" << std::endl;
+    }
 }
