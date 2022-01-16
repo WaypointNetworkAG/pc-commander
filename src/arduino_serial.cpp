@@ -75,7 +75,6 @@ void ArduinoSerial::device_handshake()
 
     while (this->connection_status.load() != STATUS_INITIALIZED && this->try_update.load())
     {
-        std::cout << "Update!" << std::endl;
         update();
     }
 }
@@ -208,6 +207,7 @@ bool ArduinoSerial::get_available_COM_ports()
 void ArduinoSerial::update()
 {
     if (serial->available() <= this->msg_length_encoded) {
+        std::cout << serial->available() << std::endl;
         return;
     }
 
