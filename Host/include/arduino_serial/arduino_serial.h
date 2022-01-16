@@ -65,6 +65,7 @@ private:
     const char *button_S      = "P-------";
 
     std::atomic<bool> try_update{false};
+    std::atomic<bool> receive_block{false};
 };
 
 #endif //PC_COMMANDER_ARDUINO_SERIAL_H_

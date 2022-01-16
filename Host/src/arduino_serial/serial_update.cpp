@@ -4,9 +4,13 @@
 
 #include "arduino_serial.h"
 
+//TEST
+bool send_ack = false;
+
 bool ArduinoSerial::update()
 {
     if (!serial->isDeviceOpen()) { return false; }
+    if (serial->available() > 0) { this->receive_block = true; }
     if (serial->available() <= this->msg_length_encoded) { return true; }
 
     char* in_bytes = new char[this->msg_length_encoded];
@@ -54,7 +58,17 @@ bool ArduinoSerial::update()
         {
             this->g_status = STATUS_SUCCESS;
             WindowsActions::send_keystroke(0x32);
-            send_success_response();
+            //TEST
+            if (send_ack)
+            {
+                std::cout << "Sending ACK message" << std::endl;
+                send_success_response();
+            }
+            else
+            {
+                std::cout << "Not sending ACK message" << std::endl;
+                send_ack = true;
+            }
         }
         else if (strcmp(message, this->button_3) == 0)
         {
@@ -84,6 +98,7 @@ bool ArduinoSerial::update()
     }
 
     delete[] dec_msg;
+    this->receive_block = false;
 
     return true;
 }
