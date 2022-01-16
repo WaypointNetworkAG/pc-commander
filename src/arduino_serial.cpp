@@ -230,6 +230,8 @@ bool ArduinoSerial::update()
         strncpy(message, reinterpret_cast<const char *>(dec_msg), 8);
         message[8] = '\0';
 
+        std::cout << message << std::endl;
+
         if (strcmp(message, this->device_key) == 0)
         {
             this->connection_status = STATUS_INITIALIZED;
