@@ -45,6 +45,8 @@ int main(int argc, const char* argv[])
 
     while (interrupt.load())
     {
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+
         arduino_serial = new ArduinoSerial();
 
         if (arduino_serial->g_status != STATUS_SUCCESS) { continue; }
@@ -61,7 +63,6 @@ int main(int argc, const char* argv[])
         }
 
         heartbeat_thread.join();
-        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     }
 
     return 0;
