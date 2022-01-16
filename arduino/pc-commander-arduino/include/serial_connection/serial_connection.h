@@ -11,6 +11,9 @@ public:
     void update();
     void send_button_message(char button_char);
 
+    //volatile bool heartbeat_ack = true;
+    volatile bool message_ack = true;
+
 private:
     unsigned char *decode(char *data);
     char *encode(char *data);

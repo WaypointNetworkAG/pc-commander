@@ -35,11 +35,25 @@ void SerialConnection::send_error_response()
 
 void SerialConnection::send_button_message(char button_char)
 {
-    char message[8] = {button_char, '-', '-', '-', '-', '-', '-', '-'};
+    while (this->connected)
+    {
+        char message[8] = {button_char, '-', '-', '-', '-', '-', '-', '-'};
 
-    char *enc_message = encode(message);
+        char *enc_message = encode(message);
 
-    Serial.write(enc_message, this->msg_length_encoded + 1);
+        Serial.write(enc_message, this->msg_length_encoded + 1);
 
-    delete[] enc_message;
+        delete[] enc_message;
+
+        this->message_ack = false;
+
+        delay(500);
+
+        update();
+
+        if (this->message_ack = true)
+        {
+            return;
+        }
+    }
 }

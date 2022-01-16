@@ -1,3 +1,4 @@
+#include <avr/wdt.h>
 #include "serial_connection/serial_connection.h"
 
 SerialConnection::SerialConnection()
@@ -53,7 +54,12 @@ void SerialConnection::update()
         }
         else if (strcmp(message, this->heartbeat_msg) == 0)
         {
+            wdt_reset();
             send_success_response();
+        }
+        else if (strcmp(message, this->success_msg) == 0)
+        {
+            this->message_ack = true;
         }
         delete[] message;
     }

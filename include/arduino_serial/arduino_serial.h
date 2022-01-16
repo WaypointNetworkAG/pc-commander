@@ -28,7 +28,7 @@ public:
     ArduinoSerial();
     ~ArduinoSerial();
     void shutdown();
-    void update();
+    bool update();
 
     void send_heartbeat_message();
 

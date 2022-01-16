@@ -54,12 +54,13 @@ ArduinoSerial::ArduinoSerial()
     else
     {
         this->g_status = STATUS_SUCCESS;
-        std::cout << "Serial Constructor done!" << std::endl;
+        std::cout << "Device connected!" << std::endl;
     }
 }
 
 ArduinoSerial::~ArduinoSerial()
 {
+    std::cout << "Destructor called" << std::endl;
     this->serial->closeDevice();
 }
 
@@ -202,11 +203,10 @@ bool ArduinoSerial::get_available_COM_ports()
     return gotPort;
 }
 
-void ArduinoSerial::update()
+bool ArduinoSerial::update()
 {
-    if (serial->available() <= this->msg_length_encoded) {
-        return;
-    }
+    if (!serial->isDeviceOpen()) { return false; }
+    if (serial->available() <= this->msg_length_encoded) { return true; }
 
     char* in_bytes = new char[this->msg_length_encoded];
 
@@ -238,7 +238,6 @@ void ArduinoSerial::update()
         {
             this->g_status = STATUS_SUCCESS;
             this->heartbeat_ack = true;
-            test_send_keypress();
         }
         else if (strcmp(message, this->error_msg) == 0)
         {
@@ -247,7 +246,7 @@ void ArduinoSerial::update()
         else if (strcmp(message, this->button_a) == 0)
         {
             this->g_status = STATUS_SUCCESS;
-            //TODO: Send Keystroke
+            test_send_keypress();
             send_success_response();
         }
         else
@@ -260,6 +259,8 @@ void ArduinoSerial::update()
     }
 
     delete[] dec_msg;
+
+    return true;
 }
 
 void ArduinoSerial::test_send_keypress()
@@ -269,10 +270,10 @@ void ArduinoSerial::test_send_keypress()
     ZeroMemory(inputs, sizeof(inputs));
 
     inputs[0].type = INPUT_KEYBOARD;
-    inputs[0].ki.wVk = 0x44;
+    inputs[0].ki.wVk = 0x31;
 
     inputs[1].type = INPUT_KEYBOARD;
-    inputs[1].ki.wVk = 0x44;
+    inputs[1].ki.wVk = 0x31;
     inputs[1].ki.dwFlags = KEYEVENTF_KEYUP;
 
     UINT uSent = SendInput(ARRAYSIZE(inputs), inputs, sizeof(INPUT));
